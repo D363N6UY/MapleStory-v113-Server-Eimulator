@@ -47,7 +47,7 @@ public class LoginServer {
     private static InetSocketAddress InetSocketadd;
     private static IoAcceptor acceptor;
     private static Map<Integer, Integer> load = new HashMap<Integer, Integer>();
-    private static String serverName, eventMessage;
+    private static String serverName, eventMessage, bubbleMessage , bubbleMessagePos ;
     private static byte flag;
     private static int maxCharacters, userLimit, usersOn = 0;
     private static boolean finishedShutdown = true, adminOnly = false;
@@ -70,6 +70,8 @@ public class LoginServer {
         userLimit = Integer.parseInt(ServerProperties.getProperty("tms.UserLimit"));
         serverName = ServerProperties.getProperty("tms.ServerName");
         eventMessage = ServerProperties.getProperty("tms.EventMessage");
+		bubbleMessage = ServerProperties.getProperty("tms.BubbleMessage");
+		bubbleMessagePos = ServerProperties.getProperty("tms.BubbleMessagePos");
         flag = Byte.parseByte(ServerProperties.getProperty("tms.Flag"));
         adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("tms.Admin", "false"));
         maxCharacters = Integer.parseInt(ServerProperties.getProperty("tms.MaxCharacters"));
@@ -107,6 +109,14 @@ public class LoginServer {
 
     public static final String getEventMessage() {
         return eventMessage;
+    }
+	
+    public static final String getBubbleMessage() {
+        return bubbleMessage;
+    }
+	
+	public static final String getBubbleMessagePos() {
+        return bubbleMessagePos;
     }
 
     public static final byte getFlag() {

@@ -212,7 +212,19 @@ public class LoginPacket {
             mplew.write(serverId);
             mplew.writeShort(i - 1);
         }
-        mplew.writeShort(0);
+        String[] bubbleMsg = LoginServer.getBubbleMessage().split(",");
+        String[] bubbleMsgPos = LoginServer.getBubbleMessagePos().split(",");
+		
+        mplew.writeShort(bubbleMsg.length);
+		
+		for( int i = 0 ; i < bubbleMsg.length ; ++i ){
+			String[] Pos = bubbleMsgPos[i].split("\\.");
+			
+			mplew.writeShort(Integer.parseInt(Pos[0]));
+			mplew.writeShort(Integer.parseInt(Pos[1]));
+			
+			mplew.writeMapleAsciiString(bubbleMsg[i]);
+		}
 
         return mplew.getPacket();
     }
