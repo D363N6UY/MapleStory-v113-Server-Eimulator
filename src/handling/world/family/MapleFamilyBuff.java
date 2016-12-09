@@ -43,7 +43,7 @@ public class MapleFamilyBuff {
     private static final int[] type = {0, 1, 2, 3 /*, 4, 2, 3, 2, 3, 2, 3*/};
     private static final int[] duration = {0, 0, 15, 15/*, 30, 15, 15, 30, 30, 30, 30*/};
     private static final int[] effect = {0, 0, 150, 150/*, 200, 200, 200, 200, 200, 200, 200*/};
-    private static final int[] rep = {0, 0300,500/*, 700, 800, 1000, 1200, 1500, 2000, 2500, 4000, 5000*/}; //70% of normal in gms O_O
+    private static final int[] rep = {0, 0, 300,500/*, 700, 800, 1000, 1200, 1500, 2000, 2500, 4000, 5000*/}; //70% of normal in gms O_O
     private static final String[] name = {"一起好嗎?", "召喚峽谷的召喚師?!", "掉落率增加 1.5x (15分鐘)", "經驗值增加 1.5x (15分鐘)"/*,
      "Family Bonding (30min)", "My Drop Rate 2x (15min)", "My EXP 2x (15min)", "My Drop Rate 2x (30min)",
      "My EXP 2x (30min)", "My Party Drop Rate 2x (30min)", "My Party EXP 2x (30min)"*/
