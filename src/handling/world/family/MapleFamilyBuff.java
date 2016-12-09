@@ -37,23 +37,23 @@ public class MapleFamilyBuff {
 
     //todo; read from somewhere
 
-    private static final int event = 2; //numevents
+    private static final int event = 4; //numevents
     // 0=tele, 1=summ, 2=drop, 3=exp, 4=both
     // questrecords used for time: 190000 to 190010
-    private static final int[] type = {0, 1/*, 2, 3, 4, 2, 3, 2, 3, 2, 3*/};
-    private static final int[] duration = {0, 0/*, 15, 15, 30, 15, 15, 30, 30, 30, 30*/};
-    private static final int[] effect = {0, 0/*, 150, 150, 200, 200, 200, 200, 200, 200, 200*/};
-    private static final int[] rep = {0, 0/*300,500, 700, 800, 1000, 1200, 1500, 2000, 2500, 4000, 5000*/}; //70% of normal in gms O_O
-    private static final String[] name = {"一起好嗎?", "召喚峽谷的召喚師?!"/*, "My Drop Rate 1.5x (15min)", "My EXP 1.5x (15min)",
+    private static final int[] type = {0, 1, 2, 3 /*, 4, 2, 3, 2, 3, 2, 3*/};
+    private static final int[] duration = {0, 0, 15, 15/*, 30, 15, 15, 30, 30, 30, 30*/};
+    private static final int[] effect = {0, 0, 150, 150/*, 200, 200, 200, 200, 200, 200, 200*/};
+    private static final int[] rep = {0, 0300,500/*, 700, 800, 1000, 1200, 1500, 2000, 2500, 4000, 5000*/}; //70% of normal in gms O_O
+    private static final String[] name = {"一起好嗎?", "召喚峽谷的召喚師?!", "掉落率增加 1.5x (15分鐘)", "經驗值增加 1.5x (15分鐘)"/*,
      "Family Bonding (30min)", "My Drop Rate 2x (15min)", "My EXP 2x (15min)", "My Drop Rate 2x (30min)",
      "My EXP 2x (30min)", "My Party Drop Rate 2x (30min)", "My Party EXP 2x (30min)"*/
 
     };
 
     private static final String[] desc = {"[目地] 自己\n[效果] 傳送你家的人到你旁邊.",
-        "[條件] 1 個家人\n[效果] 傳送一位家人到你旁邊."/*,
-     "[Target] Me\n[Time] 15 min.\n[Effect] Monster drop rate will be increased #c1.5x#.\n*  If the Drop Rate event is in progress, this will be nullified.",
-     "[Target] Me\n[Time] 15 min.\n[Effect] EXP earned from hunting will be increased #c1.5x#.\n* If the EXP event is in progress, this will be nullified.",
+        "[條件] 1 個家人\n[效果] 傳送一位家人到你旁邊.",
+     "[目地] 自己\n[時間] 15 分鐘.\n[效果] 增加怪物掉落率 #c1.5x# \n 無法與其他贈禮一起使用 ",
+     "[目的] 自己\n[時間] 15 分鐘.\n[效果] 怪物經驗值增加 #c1.5x# \n 無法與獵人的幸運一起使用"/*,
      "[Target] At least 6 Family members online that are below me in the Pedigree\n[Time] 30 min.\n[Effect] Monster drop rate and EXP earned will be increased #c2x#. \n* If the EXP event is in progress, this will be nullified.",
      "[Target] Me\n[Time] 15 min.\n[Effect] Monster drop rate will be increased #c2x#.\n* If the Drop Rate event is in progress, this will be nullified.",
      "[Target] Me\n[Time] 15 min.\n[Effect] EXP earned from hunting will be increased #c2x#.\n* If the EXP event is in progress, this will be nullified.",
@@ -103,9 +103,9 @@ public class MapleFamilyBuff {
         public int getEffectId() {
             switch (type) {
                 case 2: //drop
-                    return 2022694;
+                    return 2022463;
                 case 3: //exp
-                    return 2450018;
+                    return 2450000;
             }
             return 2022332; //custom
         }
