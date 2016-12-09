@@ -184,6 +184,7 @@ public class PlayerInteractionHandler {
                                 merchant.removeAllVisitors((byte) 16, (byte) 0);
                                 chr.setPlayerShop(ips);
                                 c.getSession().write(PlayerShopPacket.getHiredMerch(chr, merchant, false));
+								merchant.SendMsg(c);
                             } else {
                                 if (!merchant.isOpen() || !merchant.isAvailable()) {
                                     chr.dropMessage(1, "這個商店在整理或者是沒再販賣東西");
@@ -196,6 +197,7 @@ public class PlayerInteractionHandler {
                                         chr.setPlayerShop(ips);
                                         merchant.addVisitor(chr);
                                         c.getSession().write(PlayerShopPacket.getHiredMerch(chr, merchant, false));
+										merchant.SendMsg(c);
                                     }
                                 }
                             }
@@ -237,7 +239,11 @@ public class PlayerInteractionHandler {
                     chr.getTrade().chat(slea.readMapleAsciiString());
                 } else if (chr.getPlayerShop() != null) {
                     final IMaplePlayerShop ips = chr.getPlayerShop();
-                    ips.broadcastToVisitors(PlayerShopPacket.shopChat(chr.getName() + " : " + slea.readMapleAsciiString(), ips.getVisitorSlot(chr)));
+                    final String Msg = slea.readMapleAsciiString() ;
+                    ips.broadcastToVisitors(PlayerShopPacket.shopChat(chr.getName() + " : " + Msg, ips.getVisitorSlot(chr)));
+                    if(ips.getShopType() == 1 ){ // Hired Merchant
+                        ((HiredMerchant) ips).addMsg(chr.getName() + " : " + Msg , ips.getVisitorSlot(chr) );
+                    }
                 }
                 break;
             }

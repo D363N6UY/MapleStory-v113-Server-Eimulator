@@ -30,6 +30,10 @@ import server.MapleItemInformationProvider;
 import handling.channel.ChannelServer;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import server.MapleInventoryManipulator;
 import server.Timer.EtcTimer;
 import server.maps.MapleMapObjectType;
@@ -40,6 +44,7 @@ public class HiredMerchant extends AbstractPlayerStore {
 
     public ScheduledFuture<?> schedule;
     private List<String> blacklist;
+    private Map<String, Byte> MsgList;
     private int storeid;
     private long start;
 
@@ -47,6 +52,7 @@ public class HiredMerchant extends AbstractPlayerStore {
         super(owner, itemId, desc, "", 3);
         start = System.currentTimeMillis();
         blacklist = new LinkedList<String>();
+		MsgList = new HashMap<String, Byte>();
         this.schedule = EtcTimer.getInstance().schedule(new Runnable() {
 
             @Override
@@ -179,5 +185,15 @@ public class HiredMerchant extends AbstractPlayerStore {
 
     public final void sendVisitor(final MapleClient c) {
         c.getSession().write(PlayerShopPacket.MerchantVisitorView(visitors));
+    }
+	
+	public final void addMsg(final String msg , final byte slot) {
+        MsgList.put( msg , slot);
+    }
+	
+    public final void SendMsg(final MapleClient c) {
+		for (final Entry<String, Byte> s : MsgList.entrySet()) {
+            c.getSession().write(PlayerShopPacket.shopChat( s.getKey() , s.getValue() ) );
+        }
     }
 }
