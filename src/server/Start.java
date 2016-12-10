@@ -27,10 +27,10 @@ public class Start {
 
     public final static void main(final String args[]) {
         if (Boolean.parseBoolean(ServerProperties.getProperty("tms.Admin"))) {
-            System.out.println("[!!! Admin Only Mode Active !!!]");
+            System.out.println("[!!! 管理員模式 !!!]");
         }
         if (Boolean.parseBoolean(ServerProperties.getProperty("tms.AutoRegister"))) {
-            System.out.println("Loading Autoregister mode :::");
+            System.out.println("開啟註冊模式 :::");
         }
         try {
             final PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE accounts SET loggedin = 0");
@@ -53,6 +53,8 @@ public class Start {
         MapleLifeFactory.loadQuestCounts();
 //        ItemMakerFactory.getInstance();
         MapleItemInformationProvider.getInstance().load();
+		System.out.println("[載入髮型臉部物件]");
+		MapleItemInformationProvider.getInstance().loadStyles(false);
         RandomRewards.getInstance();
         SkillFactory.getSkill(99999999);
         MapleOxQuizFactory.getInstance().initialize();
@@ -78,8 +80,10 @@ public class Start {
         }
         World.registerRespawn();
         LoginServer.setOn();
-        System.out.println("Loaded Complete :::");
+        System.out.println("加載完成 :::");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.gc();
+        PingTimer.getInstance().register(System::gc, 1800000);   
     }
 
     public static class Shutdown implements Runnable {

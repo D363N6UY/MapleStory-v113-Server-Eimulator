@@ -63,6 +63,7 @@ public class ShutdownServer implements Runnable {
         CloneTimer.getInstance().stop();
         EventTimer.getInstance().stop();
         EtcTimer.getInstance().stop();
+		PingTimer.getInstance().stop();
 
         try {
             Thread.sleep(5000);

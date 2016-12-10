@@ -78,6 +78,7 @@ public class MapleItemInformationProvider {
     protected final Map<Byte, StructSetItem> setItems = new HashMap<Byte, StructSetItem>();
     protected final Map<Integer, Pair<Integer, List<Integer>>> questItems = new HashMap<Integer, Pair<Integer, List<Integer>>>();
 	protected final Map<Integer, String> faceList = new HashMap();
+	protected final Map<Integer, String> hairList = new HashMap();
 
     protected MapleItemInformationProvider() {
         System.out.println("Loading MapleItemInformationProvider :::");
@@ -1326,39 +1327,50 @@ public class MapleItemInformationProvider {
 	public final void loadStyles(boolean reload)
 	{
 		if (reload) {
+			hairList.clear();
 			faceList.clear();
 		}
-		if (!faceList.isEmpty()) {
+		if (!hairList.isEmpty() || !faceList.isEmpty()) {
 			return;
 		}
 		final List<String> types = new ArrayList<String>();
+		types.add("Hair");
 		types.add("Face");
 		for (final String type : types) {
 			for (MapleData c : stringData.getData("Eqp.img").getChildByPath("Eqp/" + type)) {
-				if (this.equipData.getData(type + "/" + StringUtil.getLeftPaddedStr(new StringBuilder().append(c.getName()).append(".img").toString(), '0', 12)) != null)
+                if (this.equipData.getData(type + "/" + StringUtil.getLeftPaddedStr(new StringBuilder().append(c.getName()).append(".img").toString(), '0', 12)) != null)
 				{
 					int dataid = Integer.parseInt(c.getName());
 					String name = MapleDataTool.getString("name", c, "無名稱");
-					if (type.equals("Face")) {
-						faceList.put(Integer.valueOf(dataid), name);
-					}
+                    if (type.equals("Hair")) {
+                        hairList.put(dataid, name);
+                    } else {
+                        faceList.put(dataid, name);
+                    }
 				}
 			}
 		}
 	}
-  
+    public boolean hairExists(int hair) {
+        return hairList.containsKey(hair);
+    }
+	
 	public boolean faceExists(int face)
 	{
-		if (faceList.isEmpty()) {
-			loadStyles(false);
-		}
-		return faceList.containsKey(Integer.valueOf(face));
+		return faceList.containsKey(face);
 	}
-  
+	
 	public final Map<Integer, String> getFaceList()
 	{
 		Map<Integer, String> list = new HashMap();
 		list.putAll(faceList);
+		return list;
+	}
+  
+	public final Map<Integer, String> getHairList()
+	{
+		Map<Integer, String> list = new HashMap();
+		list.putAll(hairList);
 		return list;
 	}
     public final boolean isCash(final int itemId) {
