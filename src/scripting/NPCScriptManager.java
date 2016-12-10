@@ -38,16 +38,29 @@ public class NPCScriptManager extends AbstractScriptManager {
     public static final NPCScriptManager getInstance() {
         return instance;
     }
+	
+	public void start(MapleClient c, int npc) {
+        start(c, npc, 0 );
+    }
 
-    public final void start(final MapleClient c, final int npc) {
+    public final void start(final MapleClient c, final int npc , final int wh) {
         final Lock lock = c.getNPCLock();
         lock.lock();
         try {
             if (c.getPlayer().isGM()) {
-                c.getPlayer().dropMessage("[系統提示]您已經建立與NPC:" + npc + "的對話(start)。");
+				if (wh == 0) {
+                    c.getPlayer().dropMessage("[系統提示]您已經建立與NPC:" + npc + "的對話。");
+                } else {
+                    c.getPlayer().dropMessage("[系統提示]您已經建立與NPC:" + npc + "_" + wh +  "的對話。");
+                }
             }
             if (!cms.containsKey(c)) {
-                Invocable iv = getInvocable("npc/" + npc + ".js", c, true);
+                Invocable iv ;
+				if(wh == 0 ){
+					iv = getInvocable("npc/" + npc + ".js", c, true);
+				}else{
+					iv = getInvocable("npc/" + npc + "_" + wh + ".js", c, true);
+				}
                 if (iv == null) {
 
                     iv = getInvocable("npc/notcoded.js", c, true); //safe disposal

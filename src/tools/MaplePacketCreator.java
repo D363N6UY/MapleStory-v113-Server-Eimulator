@@ -56,6 +56,7 @@ import handling.world.MaplePartyCharacter;
 import handling.world.PartyOperation;
 import handling.world.guild.MapleGuild;
 import handling.world.guild.MapleGuildCharacter;
+import handling.channel.MapleGuildRanking;
 import handling.channel.MapleGuildRanking.GuildRankingInfo;
 import handling.channel.handler.InventoryHandler;
 import handling.world.World;
@@ -3669,6 +3670,46 @@ public class MaplePacketCreator {
             mplew.writeInt(info.getLogoColor());
             mplew.writeInt(info.getLogoBg());
             mplew.writeInt(info.getLogoBgColor());
+        }
+
+        return mplew.getPacket();
+    }
+
+	public static MaplePacket showmesoRanks(int npcid, List<MapleGuildRanking.mesoRankingInfo> all) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
+        mplew.write(0x49);
+        mplew.writeInt(npcid);
+        mplew.writeInt(all.size());
+
+        for (MapleGuildRanking.mesoRankingInfo info : all) {
+            mplew.writeMapleAsciiString(info.getName());
+            mplew.writeInt(((Long) (info.getMeso())).intValue());
+            mplew.writeInt(info.getStr());
+            mplew.writeInt(info.getDex());
+            mplew.writeInt(info.getInt());
+            mplew.writeInt(info.getLuk());
+        }
+
+        return mplew.getPacket();
+    }
+
+    public static MaplePacket showlevelRanks(int npcid, List<MapleGuildRanking.levelRankingInfo> all) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
+        mplew.write(0x49);
+        mplew.writeInt(npcid);
+        mplew.writeInt(all.size());
+
+        for (MapleGuildRanking.levelRankingInfo info : all) {
+            mplew.writeMapleAsciiString(info.getName());
+            mplew.writeInt(info.getLevel());
+            mplew.writeInt(info.getStr());
+            mplew.writeInt(info.getDex());
+            mplew.writeInt(info.getInt());
+            mplew.writeInt(info.getLuk());
         }
 
         return mplew.getPacket();
