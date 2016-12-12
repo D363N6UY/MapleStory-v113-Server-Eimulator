@@ -1338,15 +1338,18 @@ public class MapleItemInformationProvider {
 		types.add("Face");
 		for (final String type : types) {
 			for (MapleData c : stringData.getData("Eqp.img").getChildByPath("Eqp/" + type)) {
-                if (this.equipData.getData(type + "/" + StringUtil.getLeftPaddedStr(new StringBuilder().append(c.getName()).append(".img").toString(), '0', 12)) != null)
-				{
-					int dataid = Integer.parseInt(c.getName());
-					String name = MapleDataTool.getString("name", c, "無名稱");
-                    if (type.equals("Hair")) {
-                        hairList.put(dataid, name);
-                    } else {
-                        faceList.put(dataid, name);
-                    }
+				try {
+					if (this.equipData.getData(type + "/" + StringUtil.getLeftPaddedStr(new StringBuilder().append(c.getName()).append(".img").toString(), '0', 12)) != null)
+					{
+						int dataid = Integer.parseInt(c.getName());
+						String name = MapleDataTool.getString("name", c, "無名稱");
+						if (type.equals("Hair")) {
+						    hairList.put(dataid, name);
+						} else {
+                            faceList.put(dataid, name);
+                        }
+				    }
+				}catch (Exception e) {
 				}
 			}
 		}

@@ -433,10 +433,14 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public int gainGachaponItem(int id, int quantity) {
-        return gainGachaponItem(id, quantity, c.getPlayer().getMap().getStreetName() + " - " + c.getPlayer().getMap().getMapName());
+        return gainGachaponItem(id, quantity, c.getPlayer().getMap().getStreetName() + " - " + c.getPlayer().getMap().getMapName() , false);
+    }
+	
+	public int gainGachaponItem(int id, int quantity, final boolean broad) {
+        return gainGachaponItem(id, quantity, c.getPlayer().getMap().getStreetName() + " - " + c.getPlayer().getMap().getMapName() , broad);
     }
 
-    public int gainGachaponItem(int id, int quantity, final String msg) {
+    public int gainGachaponItem(int id, int quantity, final String msg , final boolean broad ) {
         try {
             if (!MapleItemInformationProvider.getInstance().itemExists(id)) {
                 return -1;
@@ -447,7 +451,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 return -1;
             }
             final byte rareness = GameConstants.gachaponRareItem(item.getItemId());
-            if (rareness > 0) {
+            if (rareness > 0 || broad ) {
                 World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 從轉蛋機轉到了!", item, rareness,c.getChannel()-1).getBytes());
             }
             return item.getItemId();
