@@ -22,6 +22,7 @@ package server.shops;
 
 import java.util.concurrent.ScheduledFuture;
 import client.inventory.IItem;
+import java.util.concurrent.locks.Lock;
 import client.inventory.ItemFlag;
 import constants.GameConstants;
 import client.MapleCharacter;
@@ -34,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import server.MapleInventoryManipulator;
 import server.Timer.EtcTimer;
 import server.maps.MapleMapObjectType;
@@ -47,6 +49,7 @@ public class HiredMerchant extends AbstractPlayerStore {
     private Map<String, Byte> MsgList;
     private int storeid;
     private long start;
+	private ReentrantReadWriteLock merchantLock = new ReentrantReadWriteLock();
 
     public HiredMerchant(MapleCharacter owner, int itemId, String desc) {
         super(owner, itemId, desc, "", 3);
@@ -83,62 +86,69 @@ public class HiredMerchant extends AbstractPlayerStore {
     @Override
     public void buy(MapleClient c, int item, short quantity) {
         final MaplePlayerShopItem pItem = items.get(item);
-        final IItem shopItem = pItem.item;
-        final IItem newItem = shopItem.copy();
-        final short perbundle = newItem.getQuantity();
-        final int theQuantity = (pItem.price * quantity);
-        newItem.setQuantity((short) (quantity * perbundle));
+		synchronized(pItem){
+            final IItem shopItem = pItem.item;
+            final IItem newItem = shopItem.copy();
+            final short perbundle = newItem.getQuantity();
+            final int theQuantity = (pItem.price * quantity);
+            newItem.setQuantity((short) (quantity * perbundle));
 
-        byte flag = newItem.getFlag();
+            byte flag = newItem.getFlag();
 
-        if (ItemFlag.KARMA_EQ.check(flag)) {
-            newItem.setFlag((byte) (flag - ItemFlag.KARMA_EQ.getValue()));
-        } else if (ItemFlag.KARMA_USE.check(flag)) {
-            newItem.setFlag((byte) (flag - ItemFlag.KARMA_USE.getValue()));
-        }
+            if (ItemFlag.KARMA_EQ.check(flag)) {
+                newItem.setFlag((byte) (flag - ItemFlag.KARMA_EQ.getValue()));
+            } else if (ItemFlag.KARMA_USE.check(flag)) {
+                newItem.setFlag((byte) (flag - ItemFlag.KARMA_USE.getValue()));
+            }
 
-         if (MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner())) {
-			final int gainmeso = getMeso() + theQuantity - GameConstants.EntrustedStoreTax(theQuantity);
-			if (gainmeso > 0) {
-				if(MapleInventoryManipulator.addFromDrop(c, newItem, false)){
-					setMeso(gainmeso);
-					pItem.bundles -= quantity; // Number remaining in the store
-					bought.add(new BoughtItem(newItem.getItemId(), quantity, theQuantity, c.getPlayer().getName()));
-					c.getPlayer().gainMeso(-theQuantity, false);
-					MapleCharacter chr = getMCOwnerWorld();
-					if (chr != null) {
-						chr.dropMessage(5, "物品 " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") x " + quantity + " 已從精靈商店賣出. 還剩下 " + pItem.bundles + "個");
-					}
-				}else{
-					c.getPlayer().dropMessage(1, "您的背包滿了.");
-					c.getSession().write(MaplePacketCreator.enableActions());
-				}
-			} else {
-				c.getPlayer().dropMessage(1, "拍賣家有太多錢了.");
-				c.getSession().write(MaplePacketCreator.enableActions());
-			}
-         } else {
-			c.getPlayer().dropMessage(1, "您的背包滿了.");
-			c.getSession().write(MaplePacketCreator.enableActions());
-         }
+            if (MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner())) {
+			    final int gainmeso = getMeso() + theQuantity - GameConstants.EntrustedStoreTax(theQuantity);
+			    if (gainmeso > 0) {
+				    if(MapleInventoryManipulator.addFromDrop(c, newItem, false)){
+				    	setMeso(gainmeso);
+				    	pItem.bundles -= quantity; // Number remaining in the store
+					    bought.add(new BoughtItem(newItem.getItemId(), quantity, theQuantity, c.getPlayer().getName()));
+					    c.getPlayer().gainMeso(-theQuantity, false);
+					    MapleCharacter chr = getMCOwnerWorld();
+					    if (chr != null) {
+					    	chr.dropMessage(5, "物品 " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") x " + quantity + " 已從精靈商店賣出. 還剩下 " + pItem.bundles + "個");
+					    }
+				    }else{
+					    c.getPlayer().dropMessage(1, "您的背包滿了.");
+					    c.getSession().write(MaplePacketCreator.enableActions());
+				    }
+			    } else {
+				    c.getPlayer().dropMessage(1, "拍賣家有太多錢了.");
+				    c.getSession().write(MaplePacketCreator.enableActions());
+			    }
+            } else {
+			    c.getPlayer().dropMessage(1, "您的背包滿了.");
+			    c.getSession().write(MaplePacketCreator.enableActions());
+            }
+	    }
     }
 
     @Override
     public void closeShop(boolean saveItems, boolean remove) {
-        if (schedule != null) {
-            schedule.cancel(false);
-        }
-        if (saveItems) {
-            saveItems();
-            //items.clear();
-        }
-        if (remove) {
-            ChannelServer.getInstance(channel).removeMerchant(this);
-            getMap().broadcastMessage(PlayerShopPacket.destroyHiredMerchant(getOwnerId()));
-        }
-        getMap().removeMapObject(this);
-        schedule = null;
-    }
+		merchantLock.writeLock().lock();
+		try{
+            if (schedule != null) {
+                schedule.cancel(false);
+            }
+            if (saveItems) {
+                saveItems();
+                //items.clear();
+            }
+            if (remove) {
+                ChannelServer.getInstance(channel).removeMerchant(this);
+                getMap().broadcastMessage(PlayerShopPacket.destroyHiredMerchant(getOwnerId()));
+            }
+            getMap().removeMapObject(this);
+            schedule = null;
+        }finally{
+			merchantLock.writeLock().unlock();
+		}
+	}
 
     public int getTimeLeft() {
         return (int) ((System.currentTimeMillis() - start) / 1000);
