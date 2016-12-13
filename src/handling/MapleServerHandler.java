@@ -520,8 +520,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 InterServerHandler.EnterCS(c, c.getPlayer(), false);
                 break;
             case ENTER_MTS:
-//                InterServerHandler.EnterCS(c, c.getPlayer(), true);
-				c.getPlayer().dropMessage(1, "目前暫停使用.");
+                InterServerHandler.EnterCS(c, c.getPlayer(), true);
+//				c.getPlayer().dropMessage(1, "目前暫停使用.");
                 break;
             case MOVE_PLAYER:
                 PlayerHandler.MovePlayer(slea, c, c.getPlayer());
@@ -804,8 +804,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CashShopOperation.CSUpdate(c);
                 break;
             case TOUCHING_MTS:
-                MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(c.getPlayer().getId()), c);
-                break;
+//                MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(c.getPlayer().getId()), c);
+//                break;
             case MTS_TAB:
                 MTSOperation.MTSOperation(slea, c);
                 break;

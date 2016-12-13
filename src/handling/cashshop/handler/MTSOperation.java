@@ -44,21 +44,23 @@ public class MTSOperation {
             if (invType == 1) {
                 slea.skip(32);
             } else {
-                stars = slea.readShort(); //the entire quantity of the item
+                stars = (short) slea.readInt(); //the entire quantity of the item
             }
             slea.readMapleAsciiString();//owner
             //again? =/
             if (invType == 1) {
-                slea.skip(32);
+                slea.skip(28);
+                slot = (byte) slea.readInt();
 //                slea.skip(48);
 //                slot = (byte) slea.readInt();
-//                slea.skip(4); //skip the quantity int, equips are always 1
+                slea.skip(4); //skip the quantity int, equips are always 1
             } else {
-                slea.readShort(); //flag
+//              slea.readShort(); //flag
                 if (GameConstants.isThrowingStar(itemid) || GameConstants.isBullet(itemid)) {
                     slea.skip(8);//recharge ID thing
                 }
                 slot = (byte) slea.readInt();
+                System.out.println(slot);
                 if (GameConstants.isThrowingStar(itemid) || GameConstants.isBullet(itemid)) {
                     quantity = stars; //this is due to stars you need to use the entire quantity, not specified
                     slea.skip(4); //so just skip the quantity int
@@ -94,7 +96,7 @@ public class MTSOperation {
             c.getSession().write(MTSCSPacket.getMTSConfirmSell());
         } else if (op == 4) { //change page/tab
             cart.changeInfo(slea.readInt(), slea.readInt(), slea.readInt());
-        } else if (op == 7) { //cancel sale
+        } else if (op == 6) { //cancel sale
             if (!MTSStorage.getInstance().removeFromBuyNow(slea.readInt(), c.getPlayer().getId(), true)) {
                 c.getSession().write(MTSCSPacket.getMTSFailCancel());
             } else {
@@ -102,7 +104,7 @@ public class MTSOperation {
                 sendMTSPackets(cart, c, true);
                 return;
             }
-        } else if (op == 8) { //transfer item
+        } else if (op == 7) { //transfer item
             final int id = Integer.MAX_VALUE - slea.readInt(); //fake id
             if (id >= cart.getInventory().size()) {
                 c.getPlayer().dropMessage(1, "Please try it again later.");
@@ -121,7 +123,6 @@ public class MTSOperation {
                     }
                     cart.removeFromInventory(item);
                     c.getSession().write(MTSCSPacket.getMTSConfirmTransfer(item_.getQuantity(), pos)); //IF this is actually pos and pos
-                    sendMTSPackets(cart, c, true);
                     return;
                 } else {
                     //System.out.println("addByItem is less than 0");
@@ -131,14 +132,14 @@ public class MTSOperation {
                 //System.out.println("CheckSpace return false");
                 c.getSession().write(MTSCSPacket.getMTSFailBuy());
             }
-        } else if (op == 9) { //add to cart
+        } else if (op == 8) { //add to cart
             final int id = slea.readInt();
             if (MTSStorage.getInstance().checkCart(id, c.getPlayer().getId()) && cart.addToCart(id)) {
                 c.getSession().write(MTSCSPacket.addToCartMessage(false, false));
             } else {
                 c.getSession().write(MTSCSPacket.addToCartMessage(true, false));
             }
-        } else if (op == 10) { //delete from cart
+        } else if (op == 9) { //delete from cart
             final int id = slea.readInt();
             if (cart.getCart().contains(id)) {
                 cart.removeFromCart(id);
@@ -146,12 +147,12 @@ public class MTSOperation {
             } else {
                 c.getSession().write(MTSCSPacket.addToCartMessage(true, true));
             }
-        } else if (op == 16 || op == 17) { //buyNow, buy from cart
+        } else if (op == 15 || op == 16) { //buyNow, buy from cart
             final MTSItemInfo mts = MTSStorage.getInstance().getSingleItem(slea.readInt());
             if (mts != null && mts.getCharacterId() != c.getPlayer().getId()) {
-                if (c.getPlayer().getCSPoints(1) > mts.getRealPrice()) {
+                if (c.getPlayer().getCSPoints(2) > mts.getRealPrice()) {
                     if (MTSStorage.getInstance().removeFromBuyNow(mts.getId(), c.getPlayer().getId(), false)) {
-                        c.getPlayer().modifyCSPoints(1, -mts.getRealPrice(), false);
+                        c.getPlayer().modifyCSPoints(2, -mts.getRealPrice(), false);
                         MTSStorage.getInstance().getCart(mts.getCharacterId()).increaseOwedNX(mts.getPrice());
                         c.getSession().write(MTSCSPacket.getMTSConfirmBuy());
                         sendMTSPackets(cart, c, true);
@@ -165,6 +166,8 @@ public class MTSOperation {
             } else {
                 c.getSession().write(MTSCSPacket.getMTSFailBuy());
             }
+	} else if (op == 3 || op == 17 ){
+		c.getPlayer().dropMessage(1, "此功能暫不開放");		
         } else if (c.getPlayer().isAdmin()) {
             //System.out.println("New MTS Op " + op + ", \n" + slea.toString());
         }
@@ -172,7 +175,7 @@ public class MTSOperation {
     }
 
     public static void MTSUpdate(final MTSCart cart, final MapleClient c) {
-        c.getPlayer().modifyCSPoints(1, MTSStorage.getInstance().getCart(c.getPlayer().getId()).getSetOwedNX(), false);
+        c.getPlayer().modifyCSPoints(2, MTSStorage.getInstance().getCart(c.getPlayer().getId()).getSetOwedNX(), false);
         c.getSession().write(MTSCSPacket.getMTSWantedListingOver(0, 0));
         doMTSPackets(cart, c);
     }

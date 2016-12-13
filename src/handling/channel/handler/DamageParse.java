@@ -464,7 +464,7 @@ public class DamageParse {
                     }
                 }
             }
-			d+=113;
+			d+=150;
         }
         if (attack.skill == 4331003 && totDamageToOneMonster < hpMob) {
             return;
@@ -640,7 +640,7 @@ public class DamageParse {
                     }
                 }
             }
-			d+=113;
+			d+=50;
         }
         if (attack.skill != 2301002) {
             effect.applyTo(player);

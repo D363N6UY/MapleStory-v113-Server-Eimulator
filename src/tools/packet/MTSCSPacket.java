@@ -591,8 +591,8 @@ public class MTSCSPacket {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x15); //operation
-        mplew.writeInt(pages * 10); //total items
+        mplew.write(0x14); //operation
+        mplew.writeInt(pages * 16); //total items
         mplew.writeInt(items.size()); //number of items on this page
         mplew.writeInt(tab);
         mplew.writeInt(type);
@@ -628,14 +628,14 @@ public class MTSCSPacket {
     public static final MaplePacket getMTSConfirmSell() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x1D);
+        mplew.write(0x1C);
         return mplew.getPacket();
     }
 
     public static final MaplePacket getMTSFailSell() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x1E);
+        mplew.write(0x1D);
         mplew.write(0x42);
         return mplew.getPacket();
     }
@@ -643,14 +643,14 @@ public class MTSCSPacket {
     public static final MaplePacket getMTSConfirmBuy() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x33);
+        mplew.write(0x32);
         return mplew.getPacket();
     }
 
     public static final MaplePacket getMTSFailBuy() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x34);
+        mplew.write(0x33);
         mplew.write(0x42);
         return mplew.getPacket();
     }
@@ -658,14 +658,14 @@ public class MTSCSPacket {
     public static final MaplePacket getMTSConfirmCancel() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x25);
+        mplew.write(0x22);
         return mplew.getPacket();
     }
 
     public static final MaplePacket getMTSFailCancel() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x26);
+        mplew.write(0x23);
         mplew.write(0x42);
         return mplew.getPacket();
     }
@@ -673,7 +673,7 @@ public class MTSCSPacket {
     public static final MaplePacket getMTSConfirmTransfer(final int quantity, final int pos) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x27);
+        mplew.write(0x24);
         mplew.writeInt(quantity);
         mplew.writeInt(pos);
         return mplew.getPacket();
@@ -684,9 +684,9 @@ public class MTSCSPacket {
         mplew.writeInt(item.getId()); //id
         mplew.writeInt(item.getTaxes()); //this + below = price
         mplew.writeInt(item.getPrice()); //price
-        mplew.writeInt(0);// Long?
-        mplew.writeInt(KoreanDateUtil.getQuestTimestamp(item.getEndingDate()));
-        mplew.writeInt(KoreanDateUtil.getQuestTimestamp(item.getEndingDate()));
+        mplew.writeInt(item.getItem().getQuantity());// qiantity
+        mplew.writeLong(0);
+        mplew.writeLong(KoreanDateUtil.getQuestTimestamp(item.getEndingDate()));
         mplew.writeMapleAsciiString(item.getSeller()); //account name (what was nexon thinking?)
         mplew.writeMapleAsciiString(item.getSeller()); //char name
         mplew.writeZeroBytes(28);
@@ -696,13 +696,15 @@ public class MTSCSPacket {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x23);
-
+        mplew.write(0x20);
+        
         mplew.writeInt(items.size());
 
         for (MTSItemInfo item : items) {
             addMTSItemInfo(mplew, item);
         }
+		
+        mplew.write(0); //0 or 1?
 
         return mplew.getPacket();
     }
@@ -711,7 +713,7 @@ public class MTSCSPacket {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x21);
+        mplew.write(0x1E);
 
         mplew.writeInt(items.size());
         int i = 0;
@@ -720,7 +722,7 @@ public class MTSCSPacket {
             mplew.writeInt(Integer.MAX_VALUE - i); //fake ID
             mplew.writeInt(110);
             mplew.writeInt(1011); //fake
-            mplew.writeZeroBytes(48);
+            mplew.writeZeroBytes(52);
             i++;
         }
         mplew.writeInt(-47 + i - 1);
@@ -735,17 +737,17 @@ public class MTSCSPacket {
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
         if (remove) {
             if (fail) {
-                mplew.write(0x2C);
+                mplew.write(0x29);
                 mplew.writeInt(-1);
             } else {
-                mplew.write(0x2B);
+                mplew.write(0x28);
             }
         } else {
             if (fail) {
-                mplew.write(0x2A);
+                mplew.write(0x27);
                 mplew.writeInt(-1);
             } else {
-                mplew.write(0x29);
+                mplew.write(0x26);
             }
         }
 

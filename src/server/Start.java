@@ -63,7 +63,7 @@ public class Start {
         MapleFamilyBuff.getBuffEntry();
         MapleServerHandler.registerMBean();
         RankingWorker.getInstance().run();
-        // MTSStorage.load();
+        MTSStorage.load();
         CashItemFactory.getInstance().initialize();
         LoginServer.run_startup_configurations();
         ChannelServer.startChannel_Main();

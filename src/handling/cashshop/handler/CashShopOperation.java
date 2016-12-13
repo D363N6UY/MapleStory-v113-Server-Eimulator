@@ -83,9 +83,9 @@ public class CashShopOperation {
         }
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
         if (mts) {
- //           CashShopServer.getPlayerStorageMTS().registerPlayer(chr);
- //           c.getSession().write(MTSCSPacket.startMTS(chr, c));
- //           MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(c.getPlayer().getId()), c);
+            CashShopServer.getPlayerStorageMTS().registerPlayer(chr);
+            c.getSession().write(MTSCSPacket.startMTS(chr, c));
+            MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(c.getPlayer().getId()), c);
         } else {
             CashShopServer.getPlayerStorage().registerPlayer(chr);
             c.getSession().write(MTSCSPacket.warpCS(c));
