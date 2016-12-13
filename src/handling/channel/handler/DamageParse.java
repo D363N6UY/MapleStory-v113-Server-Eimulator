@@ -464,7 +464,7 @@ public class DamageParse {
                     }
                 }
             }
-			d+=150;
+			d+=50;
         }
         if (attack.skill == 4331003 && totDamageToOneMonster < hpMob) {
             return;
