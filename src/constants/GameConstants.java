@@ -710,66 +710,6 @@ public class GameConstants {
         switch (id) {
             case 2340000: // White Scroll
             case 2049100: // Chaos Scroll
-            case 2049000: // Reverse Scroll
-            case 2049001: // Reverse Scroll
-            case 2049002: // Reverse Scroll
-            case 2040006: // Miracle
-            case 2040007: // Miracle
-            case 2040303: // Miracle
-            case 2040403: // Miracle
-            case 2040506: // Miracle
-            case 2040507: // Miracle
-            case 2040603: // Miracle
-            case 2040709: // Miracle
-            case 2040710: // Miracle
-            case 2040711: // Miracle
-            case 2040806: // Miracle
-            case 2040903: // Miracle
-            case 2041024: // Miracle
-            case 2041025: // Miracle
-            case 2043003: // Miracle
-            case 2043103: // Miracle
-            case 2043203: // Miracle
-            case 2043303: // Miracle
-            case 2043703: // Miracle
-            case 2043803: // Miracle
-            case 2044003: // Miracle
-            case 2044103: // Miracle
-            case 2044203: // Miracle
-            case 2044303: // Miracle
-            case 2044403: // Miracle
-            case 2044503: // Miracle
-            case 2044603: // Miracle
-            case 2044908: // Miracle
-            case 2044815: // Miracle
-            case 2044019: // Miracle
-            case 2044703: // Miracle
-            case 1372039: // Elemental wand lvl 130
-            case 1372040: // Elemental wand lvl 130
-            case 1372041: // Elemental wand lvl 130
-            case 1372042: // Elemental wand lvl 130
-            case 1092049: // Dragon Khanjar
-            case 1382037: // Blade Staff
-                return 2;
-            case 1102084: // Pink Gaia Cape
-            case 1102041: // Pink Adventurer Cape
-            case 1402044: // Pumpkin Lantern
-            case 1082149: // Brown Work glove
-            case 1102086: // Purple Gaia Cape
-            case 1102042: // Purple Adventurer Cape
-
-            case 3010065: // Pink Parasol
-            case 3010064: // Brown Sand Bunny Cushion
-            case 3010063: // Starry Moon Cushion
-            case 3010068: // Teru Teru Chair
-            case 3010054: // Baby Bear's Dream
-            case 3012001: // Round the Campfire
-            case 3012002: // Rubber Ducky Bath
-            case 3010020: // Portable Meal Table
-            case 3010041: // Skull Throne
-
-            case 1082179: //yellow marker
-                return 2;
             //1 = wedding msg o.o
         }
         return 0;
