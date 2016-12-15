@@ -1037,8 +1037,8 @@ public class DamageParse {
                 ret.charge = 0;
                 break;
         }
-        lea.skip(1);
-        ret.unk = 0;
+//      lea.skip(1);
+        ret.unk = lea.readByte();;
         ret.display = lea.readByte(); // Always zero?
         ret.animation = lea.readByte();
         lea.skip(1); // Weapon class
@@ -1068,6 +1068,9 @@ public class DamageParse {
             }
             lea.skip(4); // CRC of monster [Wz Editing]
             ret.allDamage.add(new AttackPair(Integer.valueOf(oid), allDamageNumbers));
+        }
+        if(ret.skill == 14111006){
+            lea.skip(4);
         }
         ret.position = lea.readPos();
         return ret;
