@@ -1,15 +1,14 @@
 /*
 	This file is part of the OdinMS Maple Story Server
-    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-		       Matthias Butz <matze@odinms.de>
-		       Jan Christian Meyer <vimes@odinms.de>
+    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc> 
+                       Matthias Butz <matze@odinms.de>
+                       Jan Christian Meyer <vimes@odinms.de>
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
+    it under the terms of the GNU Affero General Public License version 3
+    as published by the Free Software Foundation. You may not use, modify
+    or distribute this program under any other version of the
+    GNU Affero General Public License.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,18 +20,19 @@
 */
 
 /*
-Kerning PQ: 2nd stage to 3rd stage portal
+Kerning PQ: 1st stage to 2nd stage portal
 */
 importPackage(Packages.server.maps);
 
 function enter(pi) {
     var eim = pi.getPlayer().getEventInstance();
-    var target = eim.getMapInstance(103000802);
-    if (eim.getProperty("2stageclear") != null) {
+    var target = eim.getMapInstance(103000801);
+
+    if (eim.getProperty("1stageclear") != null) {
         pi.getPlayer().changeMap(target, target.getPortal("st00"));
         return true;
     } else {
-        pi.playerMessage(0, "當前傳送不可用.");
+        pi.playerMessage(0, "錯誤.");
         return false;
     }
 }
