@@ -1035,17 +1035,17 @@ public class InventoryHandler {
                 }
                 switch (apfrom) { // AP to
                     case 64: // str
-                        if (playerst.getStr() <= 4 || (c.getPlayer().getJob() % 1000 / 100 == 1 && playerst.getStr() <= 35)) {
+                        if (playerst.getStr() <= 4 ) {
                             used = false;
                         }
                         break;
                     case 128: // dex
-                        if (playerst.getDex() <= 4 || (c.getPlayer().getJob() % 1000 / 100 == 3 && playerst.getDex() <= 25) || (c.getPlayer().getJob() % 1000 / 100 == 4 && playerst.getDex() <= 25) || (c.getPlayer().getJob() % 1000 / 100 == 5 && playerst.getDex() <= 20)) {
+                        if (playerst.getDex() <= 4 ) {
                             used = false;
                         }
                         break;
                     case 256: // int
-                        if (playerst.getInt() <= 4 || (c.getPlayer().getJob() % 1000 / 100 == 2 && playerst.getInt() <= 20)) {
+                        if (playerst.getInt() <= 4 ) {
                             used = false;
                         }
                         break;
