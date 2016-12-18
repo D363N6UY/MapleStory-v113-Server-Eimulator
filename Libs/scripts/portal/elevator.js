@@ -20,12 +20,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 function enter(pi) {
-	if (pi.getPlayer().getMapId() == 222020200) {
-		pi.warp(222020100, "in00");
-		return true;
-	} else if (pi.getPlayer().getMapId() == 222020100) {
-		pi.warp(222020200, "in00");
-		return true;
+	var elevator = pi.getEventManager("elevator");
+	if (elevator == null) {
+		pi.getPlayer().dropMessage(5, "電梯好像故障了...");
+		return false;
 	}
-}
+	if (pi.getPlayer().getMapId() == 222020200 && elevator.getProperty("isDown").equals("true") ) {
+		pi.warp(222020210 , "out00");
+		return true;
+	} else if (pi.getPlayer().getMapId() == 222020100 && elevator.getProperty("isUp").equals("true")) {
+		pi.warp(222020110 , "out00");
+		return true;
+	} else {
+		pi.getPlayer().dropMessage(5, "電梯門關著...");
+		return false;
+	}
 }

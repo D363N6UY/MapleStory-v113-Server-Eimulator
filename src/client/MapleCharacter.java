@@ -1612,7 +1612,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             int value = statup.getRight().intValue();
             if (statup.getLeft() == MapleBuffStat.MONSTER_RIDING && effect.getSourceId() == 5221006) {
                 if (battleshipHP <= 0) {//quick hack
-                    battleshipHP = value; //copy this as well
+                    battleshipHP = maxBattleshipHP(5221006); //copy this as well
                 }
             }
             effects.put(statup.getLeft(), new MapleBuffStatValueHolder(effect, starttime, schedule, value));
