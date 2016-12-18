@@ -15,16 +15,16 @@ function action(mode, type, selection) {
 	status++;
     } else {
 	if (status == 1) {
-	    cm.sendNext("If you wish to experience what it's like to be a Warrior, come see me again.");
+	    cm.sendNext("如果你想體驗劍士的感覺，再來跟我對話。");
 	    cm.dispose();
 	    return;
 	}
 	status--;
     }
     if (status == 0) {
-	cm.sendNext("Warriors possess an enormous power with stamina to back it up, and they shine the brightest in melee combat situation. Regular attacks are powerful to begin with, and armed with complex skills, the job is perfect for explosive attacks.");
+	cm.sendNext("劍士擁有一個強大的力量與血量，他們享受最光明正大的戰鬥。而且，並配備了複雜的技能，這個職業擁有強大的攻擊力。");
     } else if (status == 1) {
-	cm.sendYesNo("Would you like to experience what it's like to be a Warrior?");
+	cm.sendYesNo("你想體驗一下劍士看看嗎？");
     } else if (status == 2) {
 	cm.MovieClipIntroUI(true);
 	cm.warp(1020100, 0); // Effect/Direction3.img/swordman/Scene00

@@ -15,16 +15,16 @@ function action(mode, type, selection) {
 	status++;
     } else {
 	if (status == 1) {
-	    cm.sendNext("If you wish to experience what it's like to be a Bowmen, come see me again.");
+	cm.sendNext("如果你想體驗弓箭手的感覺，再來跟我對話。");
 	    cm.dispose();
 	    return;
 	}
 	status--;
     }
     if (status == 0) {
-	cm.sendNext("Bowmen are blessed with dexterity and power, taking charge of long-distance attacks, providing support for those at the front line of the battle. Very adept at using landscape as part of the arsenal.");
+	cm.sendNext("弓箭手有靈敏與力量的支援，主要負責長途攻擊，為前線的戰鬥者提供支援。非常擅長使用弓，作為攻擊的一部分。");
     } else if (status == 1) {
-	cm.sendYesNo("Would you like to experience what it's like to be a Bowman?");
+	cm.sendYesNo("你想體驗一下弓箭手的感覺嗎？");
     } else if (status == 2) {
 	cm.MovieClipIntroUI(true);
 	cm.warp(1020300, 0); // Effect/Direction3.img/archer/Scene00
