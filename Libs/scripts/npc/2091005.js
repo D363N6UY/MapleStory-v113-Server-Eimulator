@@ -31,7 +31,7 @@ function action(mode, type, selection) {
 	    } else if (sel == 3) {
 		cm.sendYesNo("You know if you reset your training points, then it'll return to 0, right? I can honestly say that it's not necessarily a bad thing. Once you reset your training points and start over again, then you'll be able to receive the belts once more. Do you want to reset your training points?");
 	    } else if (sel == 2) {
-		cm.sendSimple("Your total training points so far are #b"+cm.getDojoPoints()+"#k. Our master loves talented individuals, so if you rack up enough training points, you'll be able to receive a belt based on your training points...\n\r #L0##i1132000:# #t1132000# (500)#l \n\r #L1##i1132001:# #t1132001# (1500)#l \n\r #L2##i1132002:# #t1132002# (3000)#l \n\r #L3##i1132003:# #t1132003# (4500)#l \n\r #L4##i1132004:# #t1132004# (6000)#l\r\n#L5##i1082394:# #t1082394# (9000)\r\n#L6##i1082393:# #t1082393# (11000)\r\n#L7##i1082392:# #t1082392# (15000)");
+		cm.sendSimple("Your total training points so far are #b"+cm.getDojoPoints()+"#k. Our master loves talented individuals, so if you rack up enough training points, you'll be able to receive a belt based on your training points...\n\r #L0##i1132000:# #t1132000# (500)#l \n\r #L1##i1132001:# #t1132001# (1500)#l \n\r #L2##i1132002:# #t1132002# (3000)#l \n\r #L3##i1132003:# #t1132003# (4500)#l \n\r #L4##i1132004:# #t1132004# (6000)#l\r\n");
 	    } else if (sel == 1) {
 		if (cm.getParty() != null) {
 		    if (cm.isLeader()) {
