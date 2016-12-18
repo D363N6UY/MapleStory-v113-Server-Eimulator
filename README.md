@@ -1,4 +1,8 @@
 # MapleStory-v113-server
+
+##MIT License
+
+##
 台服 113 伺服器
 
 原始來源為網路
