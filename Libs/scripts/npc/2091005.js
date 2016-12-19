@@ -51,7 +51,7 @@ function action(mode, type, selection) {
 		if (data != null) {
 		    var idd = get_restinFieldID(parseInt(data));
 		    if (idd != 925020002) {
-		        cm.dojoAgent_NextMap(true, true);
+		        cm.dojoAgent_NextMap(true, true , idd );
 		        record.setCustomData(null);
 		    } else {
 			cm.sendOk("Please try again later.");

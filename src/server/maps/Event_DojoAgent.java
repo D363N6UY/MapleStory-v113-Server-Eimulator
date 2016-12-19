@@ -135,15 +135,24 @@ public class Event_DojoAgent {
     // 925022400 ~ 925022409
     // 925023000 ~ 925023009
     // 925023600 ~ 925023609
-    public static boolean warpNextMap(final MapleCharacter c, final boolean fromResting) {
+    public static boolean warpNextMap(final MapleCharacter c, final boolean fromResting, final MapleMap currentmap) {
         try {
-            final MapleMap currentmap = c.getMap();
             final int temp = (currentmap.getId() - 925000000) / 100;
             final int thisStage = (int) (temp - ((temp / 100) * 100));
             final int points = getDojoPoints(thisStage);
 
             final ChannelServer ch = c.getClient().getChannelServer();
-            if (!fromResting) {
+			
+			final MapleMap deadMap = ch.getMapFactory().getMap(925020002);
+			
+            if (!c.isAlive()) { //shouldn't happen
+                c.changeMap(deadMap, deadMap.getPortal(0));
+                return true;
+            }
+			
+			//final int nextmapid = 925020000 + ((thisStage + 1) * 100);
+			final MapleMap map = ch.getMapFactory().getMap(currentmap.getId() + 100);
+            if (!fromResting && map != null ) {
                 clearMap(currentmap, true);
                 if (c.getParty() != null && c.getParty().getMembers().size() > 1) {
                     for (MaplePartyCharacter mem : c.getParty().getMembers()) {
@@ -164,31 +173,36 @@ public class Event_DojoAgent {
 
             }
             if (currentmap.getId() >= 925023800 && currentmap.getId() <= 925023814) {
-                final MapleMap map = ch.getMapFactory().getMap(925020003);
+                final MapleMap lastMap = ch.getMapFactory().getMap(925020003);
 
-                if (c.getParty() != null) {
+                if (c.getParty() != null && c.getParty().getMembers().size() > 1 ) {
                     for (MaplePartyCharacter mem : c.getParty().getMembers()) {
                         MapleCharacter chr = currentmap.getCharacterById(mem.getId());
                         if (chr != null) {
-                            chr.changeMap(map, map.getPortal(1));
+							if (!chr.isAlive()) {
+                                chr.addHP(50);
+                            }
+                            chr.changeMap(lastMap, lastMap.getPortal(1));
                             chr.modifyCSPoints(1, 50, true);
                         }
                     }
                 } else {
                     c.modifyCSPoints(1, 50, true);
-                    c.changeMap(map, map.getPortal(1));
+                    c.changeMap(lastMap, lastMap.getPortal(1));
                 }
                 return true;
             }
 
-            //final int nextmapid = 925020000 + ((thisStage + 1) * 100);
-            final MapleMap map = ch.getMapFactory().getMap(currentmap.getId() + 100);
-            if (map.getCharactersSize() == 0) {
+            
+            if (map != null && map.getCharactersSize() == 0) {
                 clearMap(map, false);
                 if (c.getParty() != null) {
                     for (MaplePartyCharacter mem : c.getParty().getMembers()) {
                         MapleCharacter chr = currentmap.getCharacterById(mem.getId());
                         if (chr != null) {
+							if (!chr.isAlive()) {
+                                chr.addHP(50);
+                            }
                             chr.changeMap(map, map.getPortal(0));
                         }
                     }
@@ -197,7 +211,7 @@ public class Event_DojoAgent {
                 }
                 spawnMonster(map, thisStage + 1);
                 return true;
-            } else { //wtf, find a new map
+            } else if(map != null){ //wtf, find a new map
                 int basemap = currentmap.getId() / 100 * 100 + 100;
                 for (int x = 0; x < 15; x++) {
                     MapleMap mapz = ch.getMapFactory().getMap(basemap + x);
@@ -217,6 +231,19 @@ public class Event_DojoAgent {
                         return true;
                     }
                 }
+            }
+			final MapleMap mappz = ch.getMapFactory().getMap(925020001);
+            if (c.getParty() != null) {
+                for (MaplePartyCharacter mem : c.getParty().getMembers()) {
+                    MapleCharacter chr = currentmap.getCharacterById(mem.getId());
+                    if (chr != null) {
+                        chr.dropMessage(5, "發生未知的錯誤，傳送至入口處");
+                        chr.changeMap(mappz, mappz.getPortal(0));
+                    }
+                }
+            } else {
+                c.dropMessage(5, "發生未知的錯誤，傳送至入口處");
+                c.changeMap(mappz, mappz.getPortal(0));
             }
         } catch (Exception rm) {
             rm.printStackTrace();

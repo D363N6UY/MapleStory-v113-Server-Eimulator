@@ -61,7 +61,7 @@ function goingUp() {
     warpToM();
     em.setProperty("isDown","false");
     em.schedule("onUp", 50000);
-//em.getChannelServer().getMapFactory().getMap(222020100).setReactorState();
+    em.getChannelServer().getMapFactory().getMap(222020100).setReactorState();
 }
 
 function onUp() {
@@ -79,7 +79,7 @@ function goingDown() {
     warpToM();
     em.setProperty("isUp","false");
     em.schedule("onDown", 50000);
-//em.getChannelServer().getMapFactory().getMap(222020200).setReactorState();
+    em.getChannelServer().getMapFactory().getMap(222020200).setReactorState();
 }
 
 function warpToD() { 
