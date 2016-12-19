@@ -42,7 +42,7 @@ function init() {
     elevator_m = em.getChannelServer().getMapFactory().getMap(222020211);
     em.setProperty("isUp","false");
     em.setProperty("isDown","false");
-    //em.getChannelServer().getMapFactory().getMap(222020200).setReactorState();
+    em.getChannelServer().getMapFactory().getMap(222020200).setReactorState();
     onDown();
 }
 
