@@ -25,10 +25,10 @@ function enter(pi) {
 		pi.getPlayer().dropMessage(5, "電梯好像故障了...");
 		return false;
 	}
-	if (pi.getPlayer().getMapId() == 222020200 && elevator.getProperty("isDown").equals("true") ) {
+	if (pi.getPlayer().getMapId() == 222020200 && elevator.getProperty("isDown").equals("false") ) {
 		pi.warp(222020210 , "out00");
 		return true;
-	} else if (pi.getPlayer().getMapId() == 222020100 && elevator.getProperty("isUp").equals("true")) {
+	} else if (pi.getPlayer().getMapId() == 222020100 && elevator.getProperty("isUp").equals("false")) {
 		pi.warp(222020110 , "out00");
 		return true;
 	} else {
