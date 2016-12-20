@@ -34,12 +34,18 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 import client.MapleClient;
+import server.MaplePortal;
+
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import server.MaplePortal;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.util.stream.Collectors;
+
+import tools.EncodingDetect;
 import tools.FileoutputUtil;
 import tools.StringUtil;
-
 public class PortalScriptManager {
 
     private static final PortalScriptManager instance = new PortalScriptManager();
@@ -61,15 +67,17 @@ public class PortalScriptManager {
             scripts.put(scriptName, null);
             return null;
         }
-		StringBuilder builder = new StringBuilder();
-		builder.append("load('nashorn:mozilla_compat.js');" + System.lineSeparator());
-		builder.append(StringUtil.readFileAsString(scriptPath));
 
         //InputStreamReader fr = null;
+        InputStream in = null;
         final ScriptEngine portal = sef.getScriptEngine();
         try {
             //fr = new InputStreamReader(new FileInputStream(scriptFile), "Big5");
-            CompiledScript compiled = ((Compilable) portal).compile(builder.toString());
+            in = new FileInputStream(scriptFile);
+            BufferedReader bf = new BufferedReader(new InputStreamReader(in, EncodingDetect.getJavaEncode(scriptFile)));
+              
+            String lines = "load('nashorn:mozilla_compat.js');" + bf.lines().collect(Collectors.joining(System.lineSeparator()));
+            CompiledScript compiled = ((Compilable) portal).compile(lines);
             compiled.eval();
         } catch (final Exception e) {
             System.err.println("Error executing Portalscript: " + scriptName + ":" + e);

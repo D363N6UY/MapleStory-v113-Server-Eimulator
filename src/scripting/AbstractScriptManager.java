@@ -23,16 +23,21 @@ package scripting;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.BufferedReader;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import java.util.stream.Collectors;
+
 import client.MapleClient;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import tools.FileoutputUtil;
+import tools.EncodingDetect;
 import tools.StringUtil;
+import java.io.InputStream;
 
 /**
  *
@@ -47,6 +52,7 @@ public abstract class AbstractScriptManager {
     }
 
     protected Invocable getInvocable(String path, MapleClient c, boolean npc) {
+        InputStream in = null;
         try {
             
             path = "Libs/scripts/" + path;
@@ -65,14 +71,15 @@ public abstract class AbstractScriptManager {
                 if (c != null) {
                     c.setScriptEngine(path, engine);
                 }
+                
+                in = new FileInputStream(scriptFile);
+                BufferedReader bf = new BufferedReader(new InputStreamReader(in, EncodingDetect.getJavaEncode(scriptFile)));
+              
+                String lines = "load('nashorn:mozilla_compat.js');" + bf.lines().collect(Collectors.joining(System.lineSeparator()));
 
-				StringBuilder builder = new StringBuilder();
-				builder.append("load('nashorn:mozilla_compat.js');" + System.lineSeparator());
-				builder.append(StringUtil.readFileAsString(path));
-
-				engine.eval(builder.toString());
+                engine.eval(lines);
             } else if (c != null && npc) {
-                c.getPlayer().dropMessage(1,"角色狀態異常，請使用@解卡/@ea 來解除異常狀態");
+                c.getPlayer().dropMessage(5,"角色狀態異常，請使用@解卡/@ea 來解除異常狀態");
             }
             return (Invocable) engine;
         } catch (Exception e) {
