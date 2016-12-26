@@ -106,7 +106,7 @@ public class InterServerHandler {
             c.getSession().close();
             return;
         }
-
+        /*
         final int state = c.getLoginState();
         boolean allowLogin = false;
 
@@ -120,6 +120,7 @@ public class InterServerHandler {
 			c.getSession().close();
 			return;
 		}
+		*/
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
         channelServer.addPlayer(player);
 
