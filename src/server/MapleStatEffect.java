@@ -1294,7 +1294,7 @@ public class MapleStatEffect implements Serializable {
                     if (mountid != 0 && mountid2 != 0) {
                         final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MONSTER_RIDING, 0));
                         applyto.getClient().getSession().write(MaplePacketCreator.cancelBuff(null));
-                        applyto.getClient().getSession().write(MaplePacketCreator.giveMount(mountid, sourceid, stat));
+                        applyto.getClient().getSession().write(MaplePacketCreator.giveMount(mountid2, sourceid, stat));
                         applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showMonsterRiding(applyto.getId(), stat, mountid, sourceid), false);
                     } else {
                         return;
