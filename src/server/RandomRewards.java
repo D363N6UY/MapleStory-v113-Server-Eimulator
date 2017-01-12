@@ -12,6 +12,7 @@ public class RandomRewards {
     private List<Integer> compiledGold = null;
     private List<Integer> compiledSilver = null;
     private List<Integer> compiledFishing = null;
+	private List<Integer> compiledXmaxs = null;
     private List<Integer> compiledEvent = null;
     private List<Integer> compiledEventC = null;
     private List<Integer> compiledEventB = null;
@@ -43,6 +44,14 @@ public class RandomRewards {
         processRewards(returnArray, GameConstants.fishingReward);
 
         compiledFishing = returnArray;
+		
+		// Xmaxs Rewards
+		returnArray = new ArrayList<Integer>();
+		
+		processRewards(returnArray, GameConstants.xmaxsReward);
+
+        compiledXmaxs = returnArray;
+
 
         // Event Rewards
         returnArray = new ArrayList<Integer>();
@@ -94,6 +103,10 @@ public class RandomRewards {
 
     public final int getFishingReward() {
         return compiledFishing.get(Randomizer.nextInt(compiledFishing.size()));
+    }
+	
+	public final int getXmasreward() {
+        return compiledXmaxs.get(Randomizer.nextInt(compiledXmaxs.size()));
     }
 
     public final int getEventReward() {

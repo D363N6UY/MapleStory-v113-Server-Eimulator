@@ -972,6 +972,12 @@ public class GameConstants {
         4031648, 1, // Salmon (288cm)
         4031629, 1 // Pot
     };
+	
+	public static int[] xmaxsReward = {
+        20300223,1,
+		20300221,1,
+		20300275,1
+    };
 
     public static boolean isDragonItem(int itemId) {
         switch (itemId) {

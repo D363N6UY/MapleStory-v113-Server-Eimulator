@@ -282,17 +282,20 @@ public class MTSCSPacket {
         return mplew.getPacket();
     }
 
-    public static MaplePacket showXmasSurprise(int idFirst, IItem item, int accid) {
+    public static MaplePacket showXmasSurprise(boolean full,int idFirst, IItem item, int accid) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.XMAS_SURPRISE.getValue());
-        mplew.write(0xE6);
-        mplew.writeLong(idFirst); //uniqueid of the xmas surprise itself
-        mplew.writeInt(0);
-        addCashItemInfo(mplew, item, accid, 0); //info of the new item, but packet shows 0 for sn?
-        mplew.writeInt(item.getItemId());
-        mplew.write(1);
-        mplew.write(1);
+        mplew.write(full ? 222 : 223);
+		if(!full)
+		{
+            mplew.writeLong(idFirst); //uniqueid of the xmas surprise itself
+            mplew.writeInt(0);
+            addCashItemInfo(mplew, item, accid, 0); //info of the new item, but packet shows 0 for sn?
+            mplew.writeInt(item.getItemId());
+            mplew.write(1);
+            mplew.write(1);
+		}
 
         return mplew.getPacket();
     }
@@ -591,7 +594,7 @@ public class MTSCSPacket {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.MTS_OPERATION.getValue());
-        mplew.write(0x14); //operation
+        mplew.write(0x15); //operation
         mplew.writeInt(pages * 16); //total items
         mplew.writeInt(items.size()); //number of items on this page
         mplew.writeInt(tab);

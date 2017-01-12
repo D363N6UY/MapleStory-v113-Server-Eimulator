@@ -879,6 +879,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case GAME_POLL:
                 UserInterfaceHandler.InGame_Poll(slea, c);
                 break;
+            case XMAS_SURPRISE:
+                CashShopOperation.UseXmaxsSurprise(slea, c);
+                break;
             case OWL:
                 InventoryHandler.Owl(slea, c);
                 break;

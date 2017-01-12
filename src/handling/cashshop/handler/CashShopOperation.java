@@ -23,6 +23,7 @@ import server.CashItemInfo;
 import server.MTSStorage;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
+import server.RandomRewards;
 import tools.MaplePacketCreator;
 import tools.packet.MTSCSPacket;
 import tools.Pair;
@@ -494,6 +495,47 @@ public class CashShopOperation {
         }
         doCSPackets(c);
     }
+	
+	public static final void UseXmaxsSurprise(final SeekableLittleEndianAccessor slea, final MapleClient c){
+		int CashId = (int) slea.readLong();
+		IItem item = c.getPlayer().getCashInventory().findByCashId(CashId);
+        if (item != null && item.getItemId() == 5222000 && item.getQuantity() > 0 && MapleInventoryManipulator.checkSpace(c, item.getItemId(), item.getQuantity(), item.getOwner())) {
+            final int RewardIemId = RandomRewards.getInstance().getXmasreward();
+            final CashItemInfo rewardItem = CashItemFactory.getInstance().getItem(RewardIemId);
+
+            if (rewardItem == null) {
+
+                c.getSession().write(MTSCSPacket.sendCSFail(0));
+                doCSPackets(c);
+                return;
+            }
+            for (int i : GameConstants.cashBlock) {
+                if (rewardItem.getId() == i) {
+                    c.getPlayer().dropMessage(1, GameConstants.getCashBlockedMsg(rewardItem.getId()));
+                    doCSPackets(c);
+                    return;
+                }
+            }
+
+            IItem itemz = c.getPlayer().getCashInventory().toItem(rewardItem);
+            if(itemz != null){
+
+                if (c.getPlayer().getCashInventory().getItemsSize() >= 100) {
+                    c.getSession().write(MTSCSPacket.showXmasSurprise( true , CashId , itemz ,c.getAccID()));
+                    doCSPackets(c);
+                    return;
+                }
+                c.getPlayer().getCashInventory().addToInventory(itemz);
+                c.getSession().write(MTSCSPacket.showXmasSurprise( false , CashId , itemz ,c.getAccID()));
+                c.getPlayer().getCashInventory().removeFromInventory(item);
+			} else {
+                c.getSession().write(MTSCSPacket.sendCSFail(0));
+            }
+              
+        }
+//		doCSPackets(c);
+		return;
+	}
 
     private static final MapleInventoryType getInventoryType(final int id) {
         switch (id) {
