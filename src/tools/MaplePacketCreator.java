@@ -2778,7 +2778,8 @@ public class MaplePacketCreator {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.PARTY_OPERATION.getValue());
-        mplew.writeShort(0x23);
+        mplew.write(0x24);
+		mplew.write(0);//??
         mplew.writeInt(townId);
         mplew.writeInt(targetId);
 //        mplew.writeInt(skillId);

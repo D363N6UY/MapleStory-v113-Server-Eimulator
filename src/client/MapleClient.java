@@ -778,6 +778,7 @@ public class MapleClient implements Serializable {
             final MapleGuildCharacter chrg = player.getMGC();
             final MapleFamilyCharacter chrf = player.getMFC();
 			final IMaplePlayerShop ips = player.getPlayerShop();
+			final IMaplePlayerShop fishing = player.getPlayerFishing();
 			
 			if (player.getTrade() != null) {
 				MapleTrade.cancelTrade(player.getTrade(), this);
@@ -786,6 +787,9 @@ public class MapleClient implements Serializable {
 				if (!ips.isAvailable() || (ips.isOwner(player) && ips.getShopType() != 1) || (ips.isOwner(player) && ips.getShopType() == 1 && !ips.isOpen())) {
 					ips.closeShop(true, true);
 				}
+			}
+			if(fishing != null){
+				fishing.closeShop(true, true);
 			}
 
             removalTask();
