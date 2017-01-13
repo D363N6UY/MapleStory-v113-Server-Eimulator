@@ -227,7 +227,7 @@ public class HiredFishingHandler {
             ps.setInt(3, packageid);
             ps.execute();
             ps.close();
-            ItemLoader.HIRED_MERCHANT.saveItems(null, packageid, accid, charid);
+            ItemLoader.HIRED_FISHING.saveItems(null, packageid, accid, charid);
             return true;
         } catch (SQLException e) {
             return false;
