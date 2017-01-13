@@ -319,9 +319,6 @@ CREATE TABLE `buddies` (
 -- 資料表的匯出資料 `buddies`
 --
 
-INSERT INTO `buddies` (`id`, `characterid`, `buddyid`, `pending`, `groupname`) VALUES
-(27, 5, 4, 0, '其他'),
-(186, 4, 5, 0, '其他');
 
 -- --------------------------------------------------------
 
@@ -24650,6 +24647,79 @@ CREATE TABLE `hiredmerchitems` (
   `sender` varchar(15) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=big5;
 
+--
+-- 資料表結構 `hiredfishing`
+--
+
+CREATE TABLE `hiredfishing` (
+  `PackageId` int(10) UNSIGNED NOT NULL,
+  `characterid` int(10) UNSIGNED DEFAULT '0',
+  `accountid` int(10) UNSIGNED DEFAULT NULL,
+  `Mesos` int(10) UNSIGNED DEFAULT '0',
+  `time` bigint(20) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=big5;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `hiredfishingequipment`
+--
+
+CREATE TABLE `hiredfishingequipment` (
+  `inventoryequipmentid` int(10) UNSIGNED NOT NULL,
+  `inventoryitemid` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `upgradeslots` int(11) NOT NULL DEFAULT '0',
+  `level` int(11) NOT NULL DEFAULT '0',
+  `str` int(11) NOT NULL DEFAULT '0',
+  `dex` int(11) NOT NULL DEFAULT '0',
+  `int` int(11) NOT NULL DEFAULT '0',
+  `luk` int(11) NOT NULL DEFAULT '0',
+  `hp` int(11) NOT NULL DEFAULT '0',
+  `mp` int(11) NOT NULL DEFAULT '0',
+  `watk` int(11) NOT NULL DEFAULT '0',
+  `matk` int(11) NOT NULL DEFAULT '0',
+  `wdef` int(11) NOT NULL DEFAULT '0',
+  `mdef` int(11) NOT NULL DEFAULT '0',
+  `acc` int(11) NOT NULL DEFAULT '0',
+  `avoid` int(11) NOT NULL DEFAULT '0',
+  `hands` int(11) NOT NULL DEFAULT '0',
+  `speed` int(11) NOT NULL DEFAULT '0',
+  `jump` int(11) NOT NULL DEFAULT '0',
+  `ViciousHammer` tinyint(2) NOT NULL DEFAULT '0',
+  `itemEXP` int(11) NOT NULL DEFAULT '0',
+  `durability` int(11) NOT NULL DEFAULT '-1',
+  `enhance` tinyint(3) NOT NULL DEFAULT '0',
+  `potential1` smallint(5) NOT NULL DEFAULT '0',
+  `potential2` smallint(5) NOT NULL DEFAULT '0',
+  `potential3` smallint(5) NOT NULL DEFAULT '0',
+  `hpR` smallint(5) NOT NULL DEFAULT '0',
+  `mpR` smallint(5) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=big5;
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `hiredfishingitems`
+--
+
+CREATE TABLE `hiredfishingitems` (
+  `inventoryitemid` int(10) UNSIGNED NOT NULL,
+  `characterid` int(11) DEFAULT NULL,
+  `accountid` int(10) DEFAULT NULL,
+  `packageid` int(11) DEFAULT NULL,
+  `itemid` int(11) NOT NULL DEFAULT '0',
+  `inventorytype` int(11) NOT NULL DEFAULT '0',
+  `position` int(11) NOT NULL DEFAULT '0',
+  `quantity` int(11) NOT NULL DEFAULT '0',
+  `owner` tinytext,
+  `GM_Log` tinytext,
+  `uniqueid` int(11) NOT NULL DEFAULT '-1',
+  `flag` int(2) NOT NULL DEFAULT '0',
+  `expiredate` bigint(20) NOT NULL DEFAULT '-1',
+  `type` tinyint(1) NOT NULL DEFAULT '0',
+  `sender` varchar(15) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=big5;
+
 -- --------------------------------------------------------
 
 --
@@ -25081,13 +25151,6 @@ CREATE TABLE `pets` (
 -- 資料表的匯出資料 `pets`
 --
 
-INSERT INTO `pets` (`petid`, `name`, `level`, `closeness`, `fullness`, `seconds`, `flags`) VALUES
-(3, '褐色小貓', 1, 0, 15, 0, 0),
-(4, '褐色小貓', 1, 0, 100, 0, 0),
-(5, '褐色小貓', 1, 0, 100, 0, 0),
-(24, '神奇寶貝', 1, 0, 100, 0, 0),
-(25, '寶貝龍', 1, 0, 15, 0, 55),
-(34, '黃金機械獸', 1, 0, 15, 0, 119);
 
 -- --------------------------------------------------------
 
@@ -25156,15 +25219,6 @@ CREATE TABLE `questinfo` (
 -- 資料表的匯出資料 `questinfo`
 --
 
-INSERT INTO `questinfo` (`questinfoid`, `characterid`, `quest`, `customData`) VALUES
-(38, 10, 21002, 'cmd=o;normal=o;arr0=o;arr1=o;arr2=o;arr3=o;fin=o;mo1=o;chain=o;mo2=o;mo3=o;mo4=o'),
-(344, 4, 27000, 'enter=00001000011000010000'),
-(345, 4, 27009, 'enter=0100000001'),
-(346, 4, 1202, 'min=0;sec=0;date=0000-00-00;have=0;rank=F;try=0;cmp=0;CR=0;VR=0'),
-(347, 4, 1203, 'min=0;sec=0;date=0000-00-00;have=0;rank=F;try=4;cmp=0;CR=0;VR=0'),
-(348, 4, 27002, 'enter=1011000000'),
-(349, 4, 27006, 'enter=0000000101'),
-(350, 4, 1205, 'min=0;sec=0;date=0000-00-00;have=0;rank=F;try=1;cmp=0;CR=0;VR=0');
 
 -- --------------------------------------------------------
 
@@ -25199,82 +25253,6 @@ CREATE TABLE `queststatus` (
 -- 資料表的匯出資料 `queststatus`
 --
 
-INSERT INTO `queststatus` (`queststatusid`, `characterid`, `quest`, `status`, `time`, `forfeited`, `customData`) VALUES
-(1832, 5, 190000, 0, 1477729566, 0, '0'),
-(1833, 5, 190001, 0, 1477729566, 0, '0'),
-(1834, 5, 1031, 2, 1477729613, 0, NULL),
-(1835, 5, 8248, 2, 1477729645, 0, NULL),
-(1836, 5, 9416, 1, 1477729624, 0, NULL),
-(1837, 5, 1032, 2, 1477729665, 0, NULL),
-(1838, 5, 1033, 2, 1477729672, 0, NULL),
-(1839, 5, 1034, 1, 1477729673, 0, NULL),
-(2320, 6, 190000, 0, 1477755449, 0, '0'),
-(2321, 6, 190001, 0, 1477755449, 0, '0'),
-(2322, 7, 190000, 0, 1477755541, 0, '0'),
-(2323, 7, 190001, 0, 1477755541, 0, '0'),
-(2410, 8, 190000, 0, 1477755700, 0, '0'),
-(2411, 8, 190001, 0, 1477755700, 0, '0'),
-(3441, 10, 190000, 0, 1477847843, 0, '0'),
-(3442, 10, 190001, 0, 1477847843, 0, '0'),
-(3443, 10, 21002, 1, 1477847965, 0, '1'),
-(3444, 10, 21000, 2, 1477848150, 0, NULL),
-(3445, 10, 21001, 2, 1477848199, 0, NULL),
-(7709, 4, 20022, 1, 1477719468, 0, '1'),
-(7710, 4, 20010, 2, 1477719537, 0, NULL),
-(7711, 4, 20000, 2, 1477720068, 0, NULL),
-(7712, 4, 20015, 2, 1477720068, 0, NULL),
-(7713, 4, 20020, 2, 1477727500, 0, NULL),
-(7714, 4, 190000, 0, 1477719470, 0, '0'),
-(7715, 4, 190001, 0, 1477719470, 0, '0'),
-(7716, 4, 20021, 2, 1477719516, 0, NULL),
-(7717, 4, 20011, 2, 1477719553, 0, NULL),
-(7718, 4, 20012, 2, 1477720029, 0, NULL),
-(7719, 4, 20013, 2, 1477720068, 0, NULL),
-(7720, 4, 20001, 2, 1477720068, 0, NULL),
-(7721, 4, 20002, 2, 1477720068, 0, NULL),
-(7722, 4, 20014, 2, 1477723715, 0, NULL),
-(7723, 4, 20016, 2, 1477723727, 0, NULL),
-(7724, 4, 20100, 2, 1477723798, 0, NULL),
-(7725, 4, 20017, 1, 1477723798, 0, NULL),
-(7726, 4, 29015, 1, 1477723917, 0, NULL),
-(7727, 4, 29900, 2, 1478062029, 0, NULL),
-(7728, 4, 20704, 1, 1477725381, 0, NULL),
-(7729, 4, 20200, 2, 1477727506, 0, NULL),
-(7730, 4, 20102, 2, 1477727517, 0, NULL),
-(7731, 4, 29906, 1, 1477727522, 0, NULL),
-(7732, 4, 20202, 1, 1477727543, 0, NULL),
-(7733, 4, 29005, 1, 1477802971, 0, NULL),
-(7734, 4, 27010, 1, 1477802971, 0, '4'),
-(7735, 4, 29901, 2, 1478062030, 0, NULL),
-(7736, 4, 29902, 2, 1478062031, 0, NULL),
-(7737, 4, 29903, 2, 1478062032, 0, NULL),
-(7738, 4, 1021, 1, 1477825522, 0, NULL),
-(7739, 4, 1031, 2, 1477825577, 0, NULL),
-(7740, 4, 1032, 2, 1477825599, 0, NULL),
-(7741, 4, 1033, 1, 1477825600, 0, NULL),
-(7742, 4, 29907, 1, 1477825826, 0, NULL),
-(7743, 4, 29908, 1, 1477825826, 0, NULL),
-(7744, 4, 29014, 1, 1478012812, 0, NULL),
-(7745, 4, 27019, 1, 1478012812, 0, '2'),
-(7746, 4, 29512, 1, 1478062041, 0, NULL),
-(7747, 4, 29000, 1, 1478062045, 0, NULL),
-(7748, 4, 1202, 1, 1478077241, 0, NULL),
-(7749, 4, 1203, 1, 1478082598, 0, NULL),
-(7750, 4, 29012, 1, 1478085281, 0, '0'),
-(7751, 4, 29007, 1, 1478085281, 0, NULL),
-(7752, 4, 27012, 1, 1478085281, 0, '3'),
-(7753, 4, 160100, 0, 1478086698, 0, '0'),
-(7754, 4, 29011, 1, 1478086716, 0, NULL),
-(7755, 4, 27016, 1, 1478086716, 0, '2'),
-(7756, 4, 100006, 2, 1478089203, 0, NULL),
-(7757, 4, 100007, 2, 1478089230, 0, NULL),
-(7758, 4, 100008, 2, 1478089344, 0, NULL),
-(7759, 4, 150000, 0, 1478091713, 0, NULL),
-(7760, 4, 2191, 1, 1478093402, 0, NULL),
-(7761, 4, 160001, 0, 1478098027, 0, '0'),
-(7762, 4, 160108, 0, 1478107498, 0, '1478107511933'),
-(7763, 4, 150001, 0, 1478134856, 0, '67'),
-(7764, 4, 1205, 1, 1478138090, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -25293,8 +25271,6 @@ CREATE TABLE `queststatusmobs` (
 -- 資料表的匯出資料 `queststatusmobs`
 --
 
-INSERT INTO `queststatusmobs` (`queststatusmobid`, `queststatusid`, `mob`, `count`) VALUES
-(214, 7725, 100122, 13);
 
 -- --------------------------------------------------------
 
@@ -26227,13 +26203,7 @@ CREATE TABLE `regrocklocations` (
 -- 資料表的匯出資料 `regrocklocations`
 --
 
-INSERT INTO `regrocklocations` (`trockid`, `characterid`, `mapid`) VALUES
-(61523, 4751, 0),
-(61522, 4751, 0),
-(61521, 4751, 0),
-(61520, 4751, 0),
-(61519, 4751, 0),
-(61586, 4, 105030000);
+
 
 -- --------------------------------------------------------
 
@@ -26282,11 +26252,6 @@ CREATE TABLE `savedlocations` (
 -- 資料表的匯出資料 `savedlocations`
 --
 
-INSERT INTO `savedlocations` (`id`, `characterid`, `locationtype`, `map`) VALUES
-(312, 4, 1, 300000000),
-(313, 4, 4, 910000000),
-(314, 4, 7, 742000000),
-(315, 4, 8, 540000000);
 
 -- --------------------------------------------------------
 
@@ -29470,89 +29435,6 @@ CREATE TABLE `skills` (
 -- 資料表的匯出資料 `skills`
 --
 
-INSERT INTO `skills` (`id`, `skillid`, `characterid`, `skilllevel`, `masterlevel`, `expiration`) VALUES
-(355, 12, 5, 0, 0, -1),
-(356, 1000, 5, 1, 0, -1),
-(457, 12, 6, 0, 0, -1),
-(458, 12, 7, 0, 0, -1),
-(481, 12, 8, 0, 0, -1),
-(1360, 20000012, 10, 2, 0, -1),
-(1361, 20000017, 10, -1, 0, -1),
-(1362, 20000018, 10, -1, 0, -1),
-(1363, 20000014, 10, -1, 0, -1),
-(1364, 20000015, 10, -1, 0, -1),
-(1365, 20000016, 10, -1, 0, -1),
-(8061, 10000012, 4, 0, 0, -1),
-(8062, 10001000, 4, 3, 0, -1),
-(8063, 10001004, 4, 1, 1, -1),
-(8064, 12, 4, 0, 0, -1),
-(8065, 12000000, 4, 1, 0, -1),
-(8066, 4120002, 4, 0, 10, -1),
-(8067, 4120005, 4, 0, 10, -1),
-(8068, 4121006, 4, 2, 10, -1),
-(8069, 1002, 4, 1, 0, -1),
-(8070, 1001, 4, 2, 0, -1),
-(8071, 4100000, 4, 10, 0, -1),
-(8072, 4100001, 4, 10, 0, -1),
-(8073, 4100002, 4, 7, 0, -1),
-(8074, 5121001, 4, 0, 10, -1),
-(8075, 5121007, 4, 0, 10, -1),
-(8076, 5121002, 4, 2, 10, -1),
-(8077, 5121009, 4, 20, 1, -1),
-(8078, 5110001, 4, 22, 0, -1),
-(8079, 5111005, 4, 1, 0, -1),
-(8080, 5001005, 4, 2, 0, -1),
-(8081, 5100001, 4, 5, 0, -1),
-(8082, 5101006, 4, 20, 1, -1),
-(8083, 5111006, 4, 1, 0, -1),
-(8084, 5111002, 4, 4, 0, -1),
-(8085, 1220005, 4, 0, 10, -1),
-(8086, 1221001, 4, 0, 10, -1),
-(8087, 1221009, 4, 0, 10, -1),
-(8088, 1120004, 4, 0, 10, -1),
-(8089, 1121001, 4, 0, 10, -1),
-(8090, 1121008, 4, 0, 10, -1),
-(8091, 1111002, 4, 2, 0, -1),
-(8092, 14001005, 4, 4, 0, -1),
-(8093, 14101006, 4, 5, 0, -1),
-(8094, 14101004, 4, 1, 0, -1),
-(8095, 21100005, 4, 20, 1, -1),
-(8096, 20000012, 4, 0, 0, -1),
-(8097, 21120002, 4, 0, 10, -1),
-(8098, 21120001, 4, 0, 10, -1),
-(8099, 21121003, 4, 1, 10, -1),
-(8100, 21111001, 4, 13, 0, -1),
-(8101, 21111005, 4, 9, 0, -1),
-(8102, 21101003, 4, 20, 0, -1),
-(8103, 21000002, 4, 20, 1, -1),
-(8104, 21001001, 4, 15, 0, -1),
-(8105, 21100001, 4, 20, 1, -1),
-(8106, 21110003, 4, 9, 0, -1),
-(8107, 12101005, 4, 1, 0, -1),
-(8108, 1320005, 4, 0, 10, -1),
-(8109, 1321001, 4, 0, 10, -1),
-(8110, 1321007, 4, 0, 10, -1),
-(8111, 1320006, 4, 30, 1, -1),
-(8112, 2321001, 4, 0, 10, -1),
-(8113, 2321002, 4, 0, 10, -1),
-(8114, 2321005, 4, 0, 10, -1),
-(8115, 2221001, 4, 0, 10, -1),
-(8116, 2221002, 4, 0, 10, -1),
-(8117, 2221006, 4, 0, 10, -1),
-(8118, 2211002, 4, 2, 0, -1),
-(8119, 21100004, 4, 20, 1, -1),
-(8120, 21110004, 4, 10, 0, -1),
-(8121, 21110006, 4, 2, 0, -1),
-(8122, 2121001, 4, 0, 10, -1),
-(8123, 2121002, 4, 0, 10, -1),
-(8124, 2121006, 4, 0, 10, -1),
-(8125, 2111003, 4, 30, 1, -1),
-(8126, 8, 4, 1, 1, -1),
-(8127, 9001009, 4, 1, 0, -1),
-(8128, 9001006, 4, 1, 0, -1),
-(8129, 9001007, 4, 1, 0, -1),
-(8130, 9001000, 4, 1, 0, -1),
-(8131, 9001004, 4, 1, 0, -1);
 
 -- --------------------------------------------------------
 
@@ -29600,12 +29482,6 @@ CREATE TABLE `storages` (
 -- 資料表的匯出資料 `storages`
 --
 
-INSERT INTO `storages` (`storageid`, `accountid`, `slots`, `meso`) VALUES
-(1, 1, 32, 0),
-(2, 2, 4, 0),
-(3, 6, 4, 0),
-(4, 7, 4, 0),
-(5, 8, 4, 0);
 
 -- --------------------------------------------------------
 
@@ -29650,9 +29526,6 @@ CREATE TABLE `wishlist` (
 -- 資料表的匯出資料 `wishlist`
 --
 
-INSERT INTO `wishlist` (`characterid`, `sn`) VALUES
-(4, 40000029),
-(4, 20000517);
 
 -- --------------------------------------------------------
 
@@ -31413,7 +31286,7 @@ ALTER TABLE `guilds`
 -- 使用資料表 AUTO_INCREMENT `hiredmerch`
 --
 ALTER TABLE `hiredmerch`
-  MODIFY `PackageId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `PackageId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 --
 -- 使用資料表 AUTO_INCREMENT `hiredmerchequipment`
 --
@@ -31423,7 +31296,23 @@ ALTER TABLE `hiredmerchequipment`
 -- 使用資料表 AUTO_INCREMENT `hiredmerchitems`
 --
 ALTER TABLE `hiredmerchitems`
-  MODIFY `inventoryitemid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `inventoryitemid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  
+--
+-- 使用資料表 AUTO_INCREMENT `hiredfishing`
+--
+ALTER TABLE `hiredfishing`
+  MODIFY `PackageId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+--
+-- 使用資料表 AUTO_INCREMENT `hiredfishingequipment`
+--
+ALTER TABLE `hiredfishingequipment`
+  MODIFY `inventoryequipmentid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- 使用資料表 AUTO_INCREMENT `hiredfishingitems`
+--
+ALTER TABLE `hiredfishingitems`
+  MODIFY `inventoryitemid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 --
 -- 使用資料表 AUTO_INCREMENT `htsquads`
 --
@@ -31672,6 +31561,12 @@ ALTER TABLE `famelog`
 --
 ALTER TABLE `hiredmerchequipment`
   ADD CONSTRAINT `hiredmerchantequipment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `hiredmerchitems` (`inventoryitemid`) ON DELETE CASCADE;
+
+--
+-- 資料表的 Constraints `hiredfishingequipment`
+--
+ALTER TABLE `hiredfishingequipment`
+  ADD CONSTRAINT `hiredmerchantequipment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `hiredfishingitems` (`inventoryitemid`) ON DELETE CASCADE;
 
 --
 -- 資料表的 Constraints `inventoryequipment`
