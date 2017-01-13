@@ -71,47 +71,10 @@ public class HiredFishing extends AbstractPlayerStore {
 
     @Override
     public void buy(MapleClient c, int item, short quantity) {
-        final MaplePlayerShopItem pItem = items.get(item);
-		synchronized(pItem){
-            final IItem shopItem = pItem.item;
-            final IItem newItem = shopItem.copy();
-            final short perbundle = newItem.getQuantity();
-            final int theQuantity = (pItem.price * quantity);
-            newItem.setQuantity((short) (quantity * perbundle));
-
-            byte flag = newItem.getFlag();
-
-            if (ItemFlag.KARMA_EQ.check(flag)) {
-                newItem.setFlag((byte) (flag - ItemFlag.KARMA_EQ.getValue()));
-            } else if (ItemFlag.KARMA_USE.check(flag)) {
-                newItem.setFlag((byte) (flag - ItemFlag.KARMA_USE.getValue()));
-            }
-
-            if (MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner())) {
-			    final int gainmeso = getMeso() + theQuantity - GameConstants.EntrustedStoreTax(theQuantity);
-			    if (gainmeso > 0) {
-				    if(MapleInventoryManipulator.addFromDrop(c, newItem, false)){
-				    	setMeso(gainmeso);
-				    	pItem.bundles -= quantity; // Number remaining in the store
-					    bought.add(new BoughtItem(newItem.getItemId(), quantity, theQuantity, c.getPlayer().getName()));
-					    c.getPlayer().gainMeso(-theQuantity, false);
-					    MapleCharacter chr = getMCOwnerWorld();
-					    if (chr != null) {
-					    	chr.dropMessage(5, "物品 " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") x " + quantity + " 已從精靈商店賣出. 還剩下 " + pItem.bundles + "個");
-					    }
-				    }else{
-					    c.getPlayer().dropMessage(1, "您的背包滿了.");
-					    c.getSession().write(MaplePacketCreator.enableActions());
-				    }
-			    } else {
-				    c.getPlayer().dropMessage(1, "拍賣家有太多錢了.");
-				    c.getSession().write(MaplePacketCreator.enableActions());
-			    }
-            } else {
-			    c.getPlayer().dropMessage(1, "您的背包滿了.");
-			    c.getSession().write(MaplePacketCreator.enableActions());
-            }
-	    }
+        // hack ?
+        c.getPlayer().dropMessage(1, "Hacking?");
+        c.getSession().write(MaplePacketCreator.enableActions());
+        return;
     }
 
     @Override
