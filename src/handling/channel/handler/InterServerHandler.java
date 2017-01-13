@@ -44,6 +44,7 @@ import handling.world.guild.MapleGuild;
 import server.MapleTrade;
 import server.maps.FieldLimitType;
 import server.shops.IMaplePlayerShop;
+import server.shops.HiredFishing;
 import tools.FileoutputUtil;
 import tools.MaplePacketCreator;
 import tools.packet.FamilyPacket;
@@ -229,6 +230,12 @@ public class InterServerHandler {
         }
         player.spawnClones();
         player.spawnSavedPets();
+		
+        final HiredFishing fishing = World.hasFishing(player.getAccountID());
+        if( fishing != null ){
+            player.setPlayerFishing(fishing);
+            player.startFishingTask(true,true);
+        }
     }
 
     public static final void ChangeChannel(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {

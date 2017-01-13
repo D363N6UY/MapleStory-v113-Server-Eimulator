@@ -29,6 +29,7 @@ import java.util.List;
 import server.MerchItemPackage;
 import server.shops.AbstractPlayerStore.BoughtItem;
 import server.shops.HiredMerchant;
+import server.shops.HiredFishing;
 import server.shops.IMaplePlayerShop;
 import server.shops.MapleMiniGame;
 import server.shops.MaplePlayerShop;
@@ -200,10 +201,12 @@ public class PlayerShopPacket {
         mplew.writeShort(SendPacketOpcode.SPAWN_HIRED_MERCHANT.getValue());
         mplew.writeInt(hm.getOwnerId());
         mplew.writeInt(hm.getItemId());
+//      mplew.writeInt(5600000);
         mplew.writePos(hm.getPosition());
         mplew.writeShort(0);
         mplew.writeMapleAsciiString(hm.getOwnerName());
         PacketHelper.addInteraction(mplew, hm);
+//      mplew.writeLong(0);
 
         return mplew.getPacket();
     }
@@ -570,6 +573,76 @@ public class PlayerShopPacket {
         mplew.writeShort(SendPacketOpcode.PLAYER_INTERACTION.getValue());
         mplew.write(type);
         mplew.write(0);
+
+        return mplew.getPacket();
+    }
+	
+	
+	//釣魚小幫手
+	public static final MaplePacket sendFishBox() {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.SEND_FISH_BOX.getValue());
+        mplew.write(13);
+
+        return mplew.getPacket();
+    }
+	
+	public static final MaplePacket spawnHiredFishing(final HiredFishing hf) {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.SPAWN_HIRED_MERCHANT.getValue());
+        mplew.writeInt(hf.getOwnerId());
+        mplew.writeInt(hf.getItemId());
+        mplew.writePos(hf.getPosition());
+        mplew.writeShort(0);
+        mplew.writeMapleAsciiString(hf.getOwnerName());
+//      PacketHelper.addInteraction(mplew, hm);
+        mplew.writeLong(0);
+		
+        return mplew.getPacket();
+    }
+	
+	public static final MaplePacket updateHiredFishing(final HiredFishing Fishing) {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.UPDATE_HIRED_MERCHANT.getValue());
+        mplew.writeInt(Fishing.getOwnerId());
+        mplew.write(0);
+        mplew.writeInt(Fishing.getObjectId());
+        mplew.writeLong(0);
+
+        return mplew.getPacket();
+    }
+	
+    public static final MaplePacket closeHiredFishing(final HiredFishing Fishing) {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.SEND_FISH_BOX.getValue());
+        mplew.write(21);
+        mplew.writeInt(Fishing.getObjectId());
+
+        return mplew.getPacket();
+    }
+	
+
+	
+	public static final MaplePacket fishingItemStore_ItemData(final MerchItemPackage pack) {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.MERCH_ITEM_STORE.getValue());
+        mplew.write(0x23);
+        mplew.writeInt(9330108); // Fredrick
+        mplew.writeInt(32272); // pack.getPackageid()
+        mplew.writeZeroBytes(5);
+        mplew.writeInt(pack.getMesos());
+        mplew.write(0);
+        mplew.write(pack.getItems().size());
+
+        for (final IItem item : pack.getItems()) {
+            PacketHelper.addItemInfo(mplew, item, true, true);
+        }
+        mplew.writeZeroBytes(3);
 
         return mplew.getPacket();
     }

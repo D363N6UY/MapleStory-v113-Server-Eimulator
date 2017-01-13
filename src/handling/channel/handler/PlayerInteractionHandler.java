@@ -28,11 +28,13 @@ import constants.GameConstants;
 import client.MapleClient;
 import client.MapleCharacter;
 import client.inventory.MapleInventoryType;
+import handling.world.World;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
 import server.maps.FieldLimitType;
 import server.shops.HiredMerchant;
+import server.shops.HiredFishing;
 import server.shops.IMaplePlayerShop;
 import server.shops.MaplePlayerShop;
 import server.shops.MaplePlayerShopItem;
@@ -153,6 +155,32 @@ public class PlayerInteractionHandler {
                             c.getSession().write(PlayerShopPacket.getHiredMerch(chr, merch, true));
                         }
                     }
+                //73 00 00 4B 00 00 00 05 00 00 73 55 00
+                }else if(createType == 75){
+                    final HiredFishing f = World.hasFishing(c.getPlayer().getAccountID());
+                    //Hack ?
+                    if(f != null){
+						System.out.println("???");
+                        return;
+                    }
+                    slea.skip(5);
+                    int itemId = slea.readInt();
+                    IItem Fishing = c.getPlayer().getInventory(MapleInventoryType.CASH).findById(itemId);
+                    if (Fishing == null || Fishing.getQuantity() <= 0 || c.getPlayer().getMapId() < 749050500 || c.getPlayer().getMapId() > 749050502) {
+                        return;
+                    }
+                    if(chr.getMap().getMapObjectsInRange(chr.getPosition(), 20000, Arrays.asList(MapleMapObjectType.SHOP, MapleMapObjectType.HIRED_FISHING)).size() != 0) {
+                        chr.dropMessage(1, "不能在其他小釣手旁");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
+                    final HiredFishing fishing = new HiredFishing(chr, Fishing.getItemId());
+                    chr.setPlayerFishing(fishing);
+                    fishing.setAvailable(true);
+                    chr.getMap().addMapObject(fishing);
+                    fishing.setStoreid(c.getChannelServer().addFishing(fishing));
+                    chr.startFishingTask(false , true);
+                    fishing.update();
                 }
                 break;
             }
@@ -173,6 +201,24 @@ public class PlayerInteractionHandler {
                     if (ob == null) {
                         ob = chr.getMap().getMapObject(obid, MapleMapObjectType.SHOP);
                     }
+					if (ob == null){
+						ob = chr.getMap().getMapObject(obid, MapleMapObjectType.HIRED_FISHING);
+						if(ob instanceof IMaplePlayerShop){
+							final IMaplePlayerShop ips = (IMaplePlayerShop) ob;
+							if (ob instanceof HiredFishing) {
+								final HiredFishing Fishing = (HiredFishing) ips;
+								if (Fishing.isOwner(chr)) {
+									chr.cancelFishingTask();
+									Fishing.closeShop(true, true);
+									chr.setPlayerFishing(null);
+								}
+						    }
+						}
+						if( ob == null ){
+							chr.dropMessage(1, "你目前所在的頻道不正確(小釣手在其他頻道內?)");
+						}
+						return;
+					}
 
                     if (ob instanceof IMaplePlayerShop && chr.getPlayerShop() == null) {
                         final IMaplePlayerShop ips = (IMaplePlayerShop) ob;

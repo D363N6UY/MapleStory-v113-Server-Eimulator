@@ -36,6 +36,7 @@ import client.BuddylistEntry;
 import client.CharacterNameAndId;
 import client.inventory.MaplePet;
 import server.quest.MapleQuest;
+import server.shops.HiredFishing;
 import tools.Pair;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,8 @@ public class CharacterTransfer implements Externalizable {
     public final Map<Integer, Object> Quest = new LinkedHashMap<Integer, Object>(); // Questid instead of MapleQuest, as it's huge. Cant be transporting MapleQuest.java
     public Map<Integer, String> InfoQuest = new LinkedHashMap<Integer, String>();
     public final Map<Integer, SkillEntry> Skills = new LinkedHashMap<Integer, SkillEntry>(); // Skillid instead of Skill.java, as it's huge. Cant be transporting Skill.java and MapleStatEffect.java
-
+    public HiredFishing FishElf ;
+	
     public CharacterTransfer() {
     }
 
@@ -192,6 +194,9 @@ public class CharacterTransfer implements Externalizable {
         this.mount_Fatigue = mount.getFatigue();
         this.mount_level = mount.getLevel();
         this.mount_exp = mount.getExp();
+		
+        //精靈小釣手
+        this.FishElf = chr.getPlayerFishing();
         TranferTime = System.currentTimeMillis();
     }
 

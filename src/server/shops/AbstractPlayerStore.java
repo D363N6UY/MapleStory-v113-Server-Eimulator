@@ -129,18 +129,23 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         return open;
     }
 
-    public boolean saveItems() {
-        if (getShopType() != IMaplePlayerShop.HIRED_MERCHANT) { //hired merch only
+    public boolean saveItems(){
+        return saveItems(true);
+   }
+	
+    public boolean saveItems(boolean isMerch) {
+        if (getShopType() != IMaplePlayerShop.HIRED_MERCHANT && getShopType() != IMaplePlayerShop.HIRED_FISHING) { //hired only
             return false;
         }
+        String table_name = isMerch ? "hiredmerch" : "hiredfishing";
         Connection con = DatabaseConnection.getConnection();
         try {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM hiredmerch WHERE accountid = ? OR characterid = ?");
+            PreparedStatement ps = con.prepareStatement("DELETE FROM " + table_name +" WHERE accountid = ? OR characterid = ?");
             ps.setInt(1, owneraccount);
             ps.setInt(2, ownerId);
             ps.execute();
             ps.close();
-            ps = con.prepareStatement("INSERT INTO hiredmerch (characterid, accountid, Mesos, time) VALUES (?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("INSERT INTO " + table_name + " (characterid, accountid, Mesos, time) VALUES (?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
             ps.setInt(1, ownerId);
             ps.setInt(2, owneraccount);
             ps.setInt(3, meso.get());
@@ -152,7 +157,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
             if (!rs.next()) {
                 rs.close();
                 ps.close();
-                throw new RuntimeException("Error, adding merchant to DB");
+                throw new RuntimeException("Error, adding " + table_name + " to DB");
             }
             final int packageid = rs.getInt(1);
             rs.close();
@@ -170,7 +175,11 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
                 item.setQuantity((short) (item.getQuantity() * pItems.bundles));
                 iters.add(new Pair<IItem, MapleInventoryType>(item, GameConstants.getInventoryType(item.getItemId())));
             }
-            ItemLoader.HIRED_MERCHANT.saveItems(iters, packageid, owneraccount, ownerId);
+            if(isMerch){
+                ItemLoader.HIRED_MERCHANT.saveItems(iters, packageid, owneraccount, ownerId);
+            } else {
+                ItemLoader.HIRED_FISHING.saveItems(iters, packageid, owneraccount, ownerId);
+            }
             return true;
         } catch (SQLException se) {
             se.printStackTrace();
@@ -187,6 +196,8 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         if (isAvailable()) {
             if (getShopType() == IMaplePlayerShop.HIRED_MERCHANT) {
                 getMap().broadcastMessage(PlayerShopPacket.updateHiredMerchant((HiredMerchant) this));
+		    }else if (getShopType() == IMaplePlayerShop.HIRED_FISHING){
+				getMap().broadcastMessage(PlayerShopPacket.spawnHiredFishing((HiredFishing) this));
             } else if (getMCOwner() != null) {
                 getMap().broadcastMessage(PlayerShopPacket.sendPlayerShopBox(getMCOwner()));
             }
@@ -295,7 +306,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
 
     @Override
     public void addItem(MaplePlayerShopItem item) {
-        //System.out.println("Adding item ... 2");
+ //       System.out.println("Adding item ... 2");
         items.add(item);
     }
 

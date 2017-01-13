@@ -77,6 +77,7 @@ import server.life.MapleMonster;
 import server.maps.Event_PyramidSubway;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
+import handling.channel.handler.HiredFishingHandler;
 import tools.StringUtil;
 
 public class NPCConversationManager extends AbstractPlayerInteraction {
@@ -959,6 +960,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void openMerchantItemStore() {
         c.getPlayer().setConversation(3);
         c.getSession().write(PlayerShopPacket.merchItemStore((byte) 0x22));
+    }
+	public void openFishingItemStore() {
+		c.getPlayer().setConversation(6);
+        HiredFishingHandler.OpenFishingItemStore(c);
     }
 
     public void sendRepairWindow() {

@@ -123,19 +123,19 @@ public class PlayerHandler {
             return;
         }
 		final int map = chr.getMapId();
-        if (/*itemId == 3011000*/map == 749050500 || map == 749050501 || map == 749050502) {
+        if (map == 749050500 || map == 749050501 || map == 749050502) {
             boolean haz = false;
             for (IItem item : c.getPlayer().getInventory(MapleInventoryType.CASH).list()) {
                 if (item.getItemId() == 5340000) {
                     haz = true;
                 } else if (item.getItemId() == 5340001) {
                     haz = false;
-                    chr.startFishingTask(true);
+                    chr.startFishingTask(true , false);
                     break;
                 }
             }
             if (haz) {
-                chr.startFishingTask(false);
+                chr.startFishingTask(false , false);
             }
         }
         chr.setChair(itemId);

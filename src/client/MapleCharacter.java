@@ -27,6 +27,7 @@ import client.inventory.PetDataFactory;
 import client.inventory.Item;
 import client.inventory.ItemLoader;
 import client.inventory.MapleInventoryIdentifier;
+import client.inventory.Equip;
 import client.inventory.IItem;
 import client.inventory.MapleMount;
 import client.inventory.MaplePet;
@@ -105,6 +106,7 @@ import server.maps.FieldLimitType;
 import server.maps.SavedLocationType;
 import server.quest.MapleQuest;
 import server.shops.IMaplePlayerShop;
+import server.shops.MaplePlayerShopItem;
 import server.CashShop;
 import tools.MaplePacketCreator;
 import tools.Pair;
@@ -124,6 +126,7 @@ import server.maps.Event_PyramidSubway;
 import server.maps.MapleDragon;
 import server.maps.MapleFoothold;
 import server.movement.LifeMovementFragment;
+import server.shops.HiredFishing;
 import tools.ConcurrentEnumMap;
 import tools.FileoutputUtil;
 import tools.packet.PlayerShopPacket;
@@ -196,6 +199,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private transient List<Integer> pendingExpiration = null, pendingSkills = null;
     private transient Map<Integer, Integer> movedMobs = new HashMap<Integer, Integer>();
     private String teleportname = "";
+	private HiredFishing FishElf = null ;
 
     private MapleCharacter(final boolean ChannelServer) {
         setStance(0);
@@ -1537,7 +1541,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }, time, time);
     }
 
-    public void startFishingTask(final boolean VIP) {
+    public void startFishingTask(final boolean VIP , final boolean Elf) {
         final int time = GameConstants.getFishingTime(VIP, isGM());
         cancelFishingTask();
 
@@ -1545,12 +1549,20 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
             @Override
             public void run() {
-                final boolean expMulti = haveItem(2300001, 1, false, true);
-                if (!expMulti && !haveItem(2300000, 1, false, true)) {
+                final boolean expMulti = haveItem(Elf ? 2300003 : 2300001, 1, false, true);
+                if (!expMulti && !haveItem(Elf ? 2300002 : 2300000, 1, false, true)) {
                     cancelFishingTask();
+                    if(Elf){
+                       if( FishElf == null){
+							return;
+                        }
+						FishElf.closeShop(true, true);
+						setPlayerFishing(null);
+						dropMessage(1, "哎呀，精靈小釣手沒有魚餌啦");
+					}
                     return;
                 }
-                MapleInventoryManipulator.removeById(client, MapleInventoryType.USE, expMulti ? 2300001 : 2300000, 1, false, false);
+                MapleInventoryManipulator.removeById(client, MapleInventoryType.USE, expMulti ? (Elf ? 2300003 : 2300001 ) : (Elf ? 2300002 : 2300000 ) , 1, false, false);
 
                 final int randval = RandomRewards.getInstance().getFishingReward();
 
@@ -1561,16 +1573,33 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         //client.getSession().write(UIPacket.fishingUpdate((byte) 1, money));
                         break;
                     case 1: // EXP
-                        final int experi = Randomizer.nextInt(Math.abs(GameConstants.getExpNeededForLevel(level) / 400) + 1);
+                        final int experi = Randomizer.nextInt(Math.abs(GameConstants.getExpNeededForLevel(level) / 100) + 1);
                         gainExp(expMulti ? (experi * 3 / 2) : experi, true, false, true);
                         //client.getSession().write(UIPacket.fishingUpdate((byte) 2, experi));
                         break;
                     default:
-                        MapleInventoryManipulator.addById(client, randval, (short) 1);
-                        //client.getSession().write(UIPacket.fishingUpdate((byte) 0, randval));
+                        if( !Elf ){
+                            MapleInventoryManipulator.addById(client, randval, (short) 1);
+                            //client.getSession().write(UIPacket.fishingUpdate((byte) 0, randval));
+                        }else{
+                            if( FishElf == null ){
+                                cancelFishingTask();
+                                return;
+                            }
+                            MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+                            final IItem item;
+                            if (GameConstants.getInventoryType(randval) == MapleInventoryType.EQUIP) {
+                                item = ii.randomizeStats((Equip) ii.getEquipById(randval));
+                            } else {
+                                item = new client.inventory.Item(randval, (byte) 0, (short) 1, (byte) 0);
+                            }
+                            FishElf.addItem(new MaplePlayerShopItem(item, (short)1, 0));
+                        }
                         break;
                 }
-                map.broadcastMessage(UIPacket.fishingCaught(id));
+                if( !Elf ){
+                    map.broadcastMessage(UIPacket.fishingCaught(id));
+                }
             }
         }, time, time);
     }
@@ -4599,6 +4628,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void setPlayerShop(IMaplePlayerShop playerShop) {
         this.playerShop = playerShop;
+    }
+	
+	public HiredFishing getPlayerFishing() {
+        return FishElf;
+    }
+
+    public void setPlayerFishing(HiredFishing elf) {
+        this.FishElf = elf;
     }
 
     public int getConversation() {

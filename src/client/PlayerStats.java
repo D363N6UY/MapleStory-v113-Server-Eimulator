@@ -483,7 +483,7 @@ public class PlayerStats implements Serializable {
                 expMod = 3;//overwrite
             } else if (expMod == 1 && (itemId == 5210000)) {
                 expMod = 2;
-            } else if (expMod == 1 && itemId == 5210001 && (hour >= 0 && hour <= 6)) {
+            } else if (expMod == 1 && itemId == 5210001 && hour >= 0 && hour <= 6) {
                 expMod = 2;
             } else if (expMod == 1 && itemId == 5210002 && hour >= 6 && hour <= 12) {
                 expMod = 2;

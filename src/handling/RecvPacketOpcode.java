@@ -68,6 +68,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     NPC_SHOP,
     STORAGE,
     USE_HIRED_MERCHANT,
+	USE_HIRED_FISHING,
     MERCH_ITEM_STORE,
     DUEY_ACTION,
     ITEM_SORT,

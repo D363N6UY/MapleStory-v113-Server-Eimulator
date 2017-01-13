@@ -41,6 +41,7 @@ import java.util.Collection;
 import server.Timer.WorldTimer;
 import server.maps.MapleMap;
 import server.maps.MapleMapItem;
+import server.shops.HiredFishing;
 import tools.CollectionUtil;
 import tools.MaplePacketCreator;
 import tools.packet.PetPacket;
@@ -129,6 +130,16 @@ public class World {
             }
         }
         return false;
+    }
+	
+	public static HiredFishing hasFishing(int accountID) {
+        for (ChannelServer cs : ChannelServer.getAllInstances()) {
+			final HiredFishing fishing = cs.containsFishing(accountID);
+            if (fishing != null) {
+                return fishing;
+            }
+        }
+        return null;
     }
 
     public static PlayerStorage getStorage(int channel) {

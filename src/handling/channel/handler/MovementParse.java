@@ -121,8 +121,8 @@ public class MovementParse {
                     res.add(mov);
                     break;
                 }
-                case 21:
-                default:{
+               case 21:
+			   default:{
                     final byte newstate = lea.readByte();
                     final short duration = lea.readShort();
                     final StaticLifeMovement mov = new StaticLifeMovement(command, null , duration, newstate,0);	

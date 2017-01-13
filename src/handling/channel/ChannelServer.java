@@ -44,6 +44,7 @@ import server.MapleSquad;
 import server.MapleSquad.MapleSquadType;
 import server.maps.MapleMapFactory;
 import server.shops.HiredMerchant;
+import server.shops.HiredFishing;
 import tools.MaplePacketCreator;
 import server.life.PlayerNPC;
 import org.apache.mina.common.ByteBuffer;
@@ -73,7 +74,7 @@ public class ChannelServer implements Serializable {
     private int expRate, mesoRate, dropRate, cashRate;
     private short port = 8585;
     private static final short DEFAULT_PORT = 8585;
-    private int channel, running_MerchantID = 0, flags = 0;
+    private int channel, running_MerchantID = 0, running_FishingID = 0, flags = 0;
     private String serverMessage, key, ip, serverName;
     private boolean shutdown = false, finishedShutdown = false, MegaphoneMuteState = false, adminOnly = false;
     private PlayerStorage players;
@@ -84,8 +85,10 @@ public class ChannelServer implements Serializable {
     private static final Map<Integer, ChannelServer> instances = new HashMap<Integer, ChannelServer>();
     private final Map<MapleSquadType, MapleSquad> mapleSquads = new ConcurrentEnumMap<MapleSquadType, MapleSquad>(MapleSquadType.class);
     private final Map<Integer, HiredMerchant> merchants = new HashMap<Integer, HiredMerchant>();
+	private final Map<Integer, HiredFishing> fishings = new HashMap<Integer, HiredFishing>();
     private final Map<Integer, PlayerNPC> playerNPCs = new HashMap<Integer, PlayerNPC>();
     private final ReentrantReadWriteLock merchLock = new ReentrantReadWriteLock(); //merchant
+	private final ReentrantReadWriteLock fishingLock = new ReentrantReadWriteLock(); //hinshing
     private final ReentrantReadWriteLock squadLock = new ReentrantReadWriteLock(); //squad
     private int eventmap = -1;
     private final Map<MapleEventType, MapleEvent> events = new EnumMap<MapleEventType, MapleEvent>(MapleEventType.class);
@@ -167,6 +170,10 @@ public class ChannelServer implements Serializable {
 
         closeAllMerchant();
 
+		System.out.println("Channel " + channel + ", Saving hired fishings...");
+		
+		closeAllFishing();
+		
         System.out.println("Channel " + channel + ", Saving characters...");
 
         getPlayerStorage().disconnectAll();
@@ -421,6 +428,7 @@ public class ChannelServer implements Serializable {
         }
         return contains;
     }
+	
 
     public final List<HiredMerchant> searchMerchant(final int itemSearch) {
         final List<HiredMerchant> list = new LinkedList<HiredMerchant>();
@@ -438,6 +446,63 @@ public class ChannelServer implements Serializable {
             merchLock.readLock().unlock();
         }
         return list;
+    }
+	
+	public final void closeAllFishing() {
+        fishingLock.writeLock().lock();
+        try {
+            final Iterator<HiredFishing> fishings_ = fishings.values().iterator();
+            while (fishings_.hasNext()) {
+                fishings_.next().closeShop(true, false);
+                fishings_.remove();
+            }
+        } finally {
+            fishingLock.writeLock().unlock();
+        }
+    }
+	
+	public final int addFishing(final HiredFishing hFishing) {
+        fishingLock.writeLock().lock();
+
+        int runningmer = 0;
+        try {
+            runningmer = running_FishingID;
+            fishings.put(running_FishingID, hFishing);
+            running_FishingID++;
+        } finally {
+            fishingLock.writeLock().unlock();
+        }
+        return runningmer;
+    }
+
+    public final void removeFishing(final HiredFishing hFishing) {
+        fishingLock.writeLock().lock();
+
+        try {
+            fishings.remove(hFishing.getStoreId());
+        } finally {
+            fishingLock.writeLock().unlock();
+        }
+    }
+
+    public final HiredFishing containsFishing(final int accid) {
+        HiredFishing contains = null;
+
+        fishingLock.readLock().lock();
+        try {
+            final Iterator itr = fishings.values().iterator();
+
+            while (itr.hasNext()) {
+				HiredFishing Fishing_itr = ((HiredFishing) itr.next());
+                if (Fishing_itr.getOwnerAccId() == accid) {
+                    contains = Fishing_itr;
+                    break;
+                }
+            }
+        } finally {
+            fishingLock.readLock().unlock();
+        }
+        return contains;
     }
 
     public final void toggleMegaphoneMuteState() {

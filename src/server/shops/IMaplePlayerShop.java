@@ -28,7 +28,8 @@ import server.shops.AbstractPlayerStore.BoughtItem;
 import tools.Pair;
 
 public interface IMaplePlayerShop {
-
+	
+    public final static byte HIRED_FISHING = -1;
     public final static byte HIRED_MERCHANT = 1;
     public final static byte PLAYER_SHOP = 2;
     public final static byte OMOK = 3;

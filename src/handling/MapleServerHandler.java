@@ -855,8 +855,16 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case USE_HIRED_MERCHANT:
                 HiredMerchantHandler.UseHiredMerchant(slea, c);
                 break;
+			case USE_HIRED_FISHING:
+			    HiredFishingHandler.UseHiredFishing(slea, c);
+				break;
             case MERCH_ITEM_STORE:
-                HiredMerchantHandler.MerchantItemStore(slea, c);
+			    final int conv = c.getPlayer().getConversation();
+				if(conv == 3){
+                    HiredMerchantHandler.MerchantItemStore(slea, c);
+				} else {
+					HiredFishingHandler.FishingItemStore(slea, c);
+				}
                 break;
             case CANCEL_DEBUFF:
                 // Ignore for now
