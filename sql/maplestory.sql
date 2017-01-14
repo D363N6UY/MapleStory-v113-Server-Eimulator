@@ -31566,7 +31566,7 @@ ALTER TABLE `hiredmerchequipment`
 -- 資料表的 Constraints `hiredfishingequipment`
 --
 ALTER TABLE `hiredfishingequipment`
-  ADD CONSTRAINT `hiredmerchantequipment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `hiredfishingitems` (`inventoryitemid`) ON DELETE CASCADE;
+  ADD CONSTRAINT `hiredfishingequipment` FOREIGN KEY (`inventoryitemid`) REFERENCES `hiredfishingitems` (`inventoryitemid`) ON DELETE CASCADE;
 
 --
 -- 資料表的 Constraints `inventoryequipment`
