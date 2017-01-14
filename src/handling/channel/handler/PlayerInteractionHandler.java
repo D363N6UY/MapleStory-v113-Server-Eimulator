@@ -166,7 +166,7 @@ public class PlayerInteractionHandler {
                     slea.skip(5);
                     int itemId = slea.readInt();
                     IItem Fishing = c.getPlayer().getInventory(MapleInventoryType.CASH).findById(itemId);
-                    if (Fishing == null || Fishing.getQuantity() <= 0 || c.getPlayer().getMapId() < 749050500 || c.getPlayer().getMapId() > 749050502 || itemId !=5600001 || itemId != 5600000) {
+                    if (Fishing == null || Fishing.getQuantity() <= 0 || c.getPlayer().getMapId() < 749050500 || c.getPlayer().getMapId() > 749050502 || (itemId !=5600001 && itemId != 5600000) ) {
                         return;
                     }
                     if(chr.getMap().getMapObjectsInRange(chr.getPosition(), 20000, Arrays.asList(MapleMapObjectType.SHOP, MapleMapObjectType.HIRED_FISHING)).size() != 0) {
