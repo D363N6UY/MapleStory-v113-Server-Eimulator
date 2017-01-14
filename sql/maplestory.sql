@@ -30830,6 +30830,32 @@ ALTER TABLE `hiredmerchitems`
   ADD KEY `characterid_2` (`characterid`,`inventorytype`);
 
 --
+-- 資料表索引 `hiredmerch`
+--
+ALTER TABLE `hiredmerch`
+  ADD PRIMARY KEY (`PackageId`);
+
+--
+-- 資料表索引 `hiredmerchequipment`
+--
+ALTER TABLE `hiredmerchequipment`
+  ADD PRIMARY KEY (`inventoryequipmentid`),
+  ADD KEY `inventoryitemid` (`inventoryitemid`);
+
+--
+-- 資料表索引 `hiredmerchitems`
+--
+ALTER TABLE `hiredmerchitems`
+  ADD PRIMARY KEY (`inventoryitemid`),
+  ADD KEY `inventoryitems_ibfk_1` (`characterid`),
+  ADD KEY `characterid` (`characterid`),
+  ADD KEY `inventorytype` (`inventorytype`),
+  ADD KEY `accountid` (`accountid`),
+  ADD KEY `packageid` (`packageid`),
+  ADD KEY `characterid_2` (`characterid`,`inventorytype`);
+
+  
+--
 -- 資料表索引 `htsquads`
 --
 ALTER TABLE `htsquads`
