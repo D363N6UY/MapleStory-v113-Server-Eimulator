@@ -75,6 +75,7 @@ public class LoginServer {
         flag = Byte.parseByte(ServerProperties.getProperty("tms.Flag"));
         adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("tms.Admin", "false"));
         maxCharacters = Integer.parseInt(ServerProperties.getProperty("tms.MaxCharacters"));
+		PORT = Integer.parseInt(ServerProperties.getProperty("tms.LPort" , "8484"));
 
         ByteBuffer.setUseDirectBuffers(false);
         ByteBuffer.setAllocator(new SimpleByteBufferAllocator());
