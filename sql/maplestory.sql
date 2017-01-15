@@ -30830,22 +30830,22 @@ ALTER TABLE `hiredmerchitems`
   ADD KEY `characterid_2` (`characterid`,`inventorytype`);
 
 --
--- 資料表索引 `hiredmerch`
+-- 資料表索引 `hiredfishing`
 --
-ALTER TABLE `hiredmerch`
+ALTER TABLE `hiredfishing`
   ADD PRIMARY KEY (`PackageId`);
 
 --
--- 資料表索引 `hiredmerchequipment`
+-- 資料表索引 `hiredfishingequipment`
 --
-ALTER TABLE `hiredmerchequipment`
+ALTER TABLE `hiredfishingequipment`
   ADD PRIMARY KEY (`inventoryequipmentid`),
   ADD KEY `inventoryitemid` (`inventoryitemid`);
 
 --
--- 資料表索引 `hiredmerchitems`
+-- 資料表索引 `hiredfishingitems`
 --
-ALTER TABLE `hiredmerchitems`
+ALTER TABLE `hiredfishingitems`
   ADD PRIMARY KEY (`inventoryitemid`),
   ADD KEY `inventoryitems_ibfk_1` (`characterid`),
   ADD KEY `characterid` (`characterid`),
