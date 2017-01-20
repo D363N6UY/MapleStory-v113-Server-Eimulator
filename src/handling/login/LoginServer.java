@@ -43,7 +43,7 @@ import server.ServerProperties;
 
 public class LoginServer {
 
-    public static final int PORT = 8484;
+    public static int PORT = 8484;
     private static InetSocketAddress InetSocketadd;
     private static IoAcceptor acceptor;
     private static Map<Integer, Integer> load = new HashMap<Integer, Integer>();
@@ -75,7 +75,7 @@ public class LoginServer {
         flag = Byte.parseByte(ServerProperties.getProperty("tms.Flag"));
         adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("tms.Admin", "false"));
         maxCharacters = Integer.parseInt(ServerProperties.getProperty("tms.MaxCharacters"));
-		PORT = Integer.parseInt(ServerProperties.getProperty("tms.LPort" , "8484"));
+        PORT = Integer.parseInt(ServerProperties.getProperty("tms.LPort" , "8484"));
 
         ByteBuffer.setUseDirectBuffers(false);
         ByteBuffer.setAllocator(new SimpleByteBufferAllocator());
