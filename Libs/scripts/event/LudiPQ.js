@@ -222,7 +222,7 @@ function changedMap(eim, player, mapid) {
 		eim.unregisterPlayer(player);
 		if(mapid != 922011100)
 			if(eim.isLeader(player)){
-				finish(eim);
+				disbandParty(eim);
 			}
 			player.changeMap(exitMap, exitMap.getPortal(0));
 	}

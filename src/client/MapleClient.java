@@ -414,7 +414,7 @@ public class MapleClient implements Serializable {
                         } else if (salt == null && LoginCrypto.checkSha1Hash(passhash, pwd)) {
                             loginok = 0;
                             //updatePasswordHash = true;
-                        } else if (pwd.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
+                        } else if (LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
                             loginok = 0;
                             updatePasswordHashtosha1 = true;
                         } else {
@@ -528,7 +528,7 @@ public class MapleClient implements Serializable {
         } else if (salt2 == null && LoginCrypto.checkSha1Hash(secondPassword, in)) {
             allow = true;
             updatePasswordHash = true;
-        } else if (in.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(secondPassword, in, salt2)) {
+        } else if (LoginCrypto.checkSaltedSha512Hash(secondPassword, in, salt2)) {
             allow = true;
         }
         if (updatePasswordHash) {

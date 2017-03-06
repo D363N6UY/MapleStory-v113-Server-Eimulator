@@ -72,7 +72,6 @@ public class GameConstants {
     public static final int OMOK_SCORE = 122200;
     public static final int MATCH_SCORE = 122210;
     public static final int[] blockedSkills = {4341003};
-    public static final String MASTER = "%&HYGEomgLOL";
     public static final String[] RESERVED = {"Rental"};
 
     public static int getExpNeededForLevel(final int level) {
