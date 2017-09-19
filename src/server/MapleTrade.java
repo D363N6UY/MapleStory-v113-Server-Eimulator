@@ -42,11 +42,15 @@ public class MapleTrade {
                 MapleInventoryManipulator.addFromDrop(chr.get().getClient(), item, false);
             }
             exchangeItems.clear();
+            if( items != null ){
+                items.clear();
+            }
         }
         if (exchangeMeso > 0) {
             chr.get().gainMeso(exchangeMeso - GameConstants.getTaxAmount(exchangeMeso), false, true, false);
         }
         exchangeMeso = 0;
+        meso = 0;
 
         chr.get().getClient().sendPacket(MaplePacketCreator.TradeMessage(tradingslot, (byte) 0x08));
     }
@@ -61,10 +65,14 @@ public class MapleTrade {
                 MapleInventoryManipulator.addFromDrop(c, item, false);
             }
             items.clear();
+            if( exchangeItems != null ){
+                exchangeItems.clear();
+            }
         }
         if (meso > 0) {
             c.getPlayer().gainMeso(meso, false, true, false);
         }
+        exchangeMeso = 0;
         meso = 0;
 
         c.sendPacket(MaplePacketCreator.getTradeCancel(tradingslot, unsuccessful));
