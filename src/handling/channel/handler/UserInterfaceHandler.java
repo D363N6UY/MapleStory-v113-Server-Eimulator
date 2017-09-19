@@ -45,7 +45,7 @@ public class UserInterfaceHandler {
 
             if (selection >= 0 && selection <= ServerConstants.Poll_Answers.length) {
                 if (MapleCharacterUtil.SetPoll(c.getAccID(), selection)) {
-                    c.getSession().write(MaplePacketCreator.getPollReply("Thank you."));
+                    c.sendPacket(MaplePacketCreator.getPollReply("Thank you."));
                     //idk what goes here lol
                 }
             }
@@ -93,7 +93,7 @@ public class UserInterfaceHandler {
                 em = c.getChannelServer().getEventSM().getEventManager("Boats");
                 if (em != null && em.getProperty("haveBalrog").equals("true")) {
                     effect = 1034;
-                    c.getSession().write(MaplePacketCreator.boatEffect(effect));
+                    c.sendPacket(MaplePacketCreator.boatEffect(effect));
                     return;
                 } else {
                     return; // shyt, fixme!
@@ -103,6 +103,6 @@ public class UserInterfaceHandler {
                 System.out.println("Unhandled ship object, MapID : " + mapid);
                 break;
         }
-        c.getSession().write(MaplePacketCreator.boatPacket(effect));
+        c.sendPacket(MaplePacketCreator.boatPacket(effect));
     }
 }

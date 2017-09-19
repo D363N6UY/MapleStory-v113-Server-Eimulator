@@ -242,7 +242,7 @@ public class PlayerStorage {
         try {
             final Iterator<MapleCharacter> itr = nameToChar.values().iterator();
             while (itr.hasNext()) {
-                itr.next().getClient().getSession().write(data);
+                itr.next().getClient().sendPacket(data);
             }
         } finally {
             rL.unlock();
@@ -258,7 +258,7 @@ public class PlayerStorage {
                 chr = itr.next();
 
                 if (chr.getClient().isLoggedIn() && chr.getSmega()) {
-                    chr.getClient().getSession().write(data);
+                    chr.getClient().sendPacket(data);
                 }
             }
         } finally {
@@ -275,7 +275,7 @@ public class PlayerStorage {
                 chr = itr.next();
 
                 if (chr.getClient().isLoggedIn() && chr.isGM()) {
-                    chr.getClient().getSession().write(data);
+                    chr.getClient().sendPacket(data);
                 }
             }
         } finally {

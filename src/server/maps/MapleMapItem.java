@@ -139,13 +139,13 @@ public class MapleMapItem extends AbstractMapleMapObject {
     @Override
     public void sendSpawnData(final MapleClient client) {
         if (questid <= 0 || client.getPlayer().getQuestStatus(questid) == 1) {
-            client.getSession().write(MaplePacketCreator.dropItemFromMapObject(this, null, getPosition(), (byte) 2));
+            client.sendPacket(MaplePacketCreator.dropItemFromMapObject(this, null, getPosition(), (byte) 2));
         }
     }
 
     @Override
     public void sendDestroyData(final MapleClient client) {
-        client.getSession().write(MaplePacketCreator.removeItemFromMap(getObjectId(), 1, 0));
+        client.sendPacket(MaplePacketCreator.removeItemFromMap(getObjectId(), 1, 0));
     }
 
     public Lock getLock() {

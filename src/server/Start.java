@@ -53,15 +53,15 @@ public class Start {
         MapleLifeFactory.loadQuestCounts();
 //        ItemMakerFactory.getInstance();
         MapleItemInformationProvider.getInstance().load();
-		System.out.println("[載入髮型臉部物件]");
-		MapleItemInformationProvider.getInstance().loadStyles(false);
+        System.out.println("[載入髮型臉部物件]");
+        MapleItemInformationProvider.getInstance().loadStyles(false);
         RandomRewards.getInstance();
         SkillFactory.getSkill(99999999);
         MapleOxQuizFactory.getInstance().initialize();
         MapleCarnivalFactory.getInstance();
         MapleGuildRanking.getInstance().getRank();
         MapleFamilyBuff.getBuffEntry();
-        MapleServerHandler.registerMBean();
+        //MapleServerHandler.registerMBean();
         RankingWorker.getInstance().run();
         MTSStorage.load();
         CashItemFactory.getInstance().initialize();
@@ -72,7 +72,7 @@ public class Start {
         CashShopServer.run_startup_configurations();
         System.out.println("[購物商城伺服器啟動完成]");
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
-        Runtime.getRuntime().addShutdownHook(new Thread(new Shutdown()));
+        Runtime.getRuntime().addShutdownHook(new Thread(ShutdownServer.getInstance()));
         try {
             SpeedRunner.getInstance().loadSpeedRuns();
         } catch (SQLException e) {
@@ -82,11 +82,11 @@ public class Start {
         LoginServer.setOn();
         System.out.println("加載完成 :::");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		System.gc();
+        System.gc();
         PingTimer.getInstance().register(System::gc, 1800000);   
     }
 
-    public static class Shutdown implements Runnable {
+    public class Shutdown implements Runnable {
 
         @Override
         public void run() {

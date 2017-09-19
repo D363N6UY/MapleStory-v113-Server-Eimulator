@@ -20,6 +20,9 @@
  */
 package client;
 
+import io.netty.channel.Channel;
+import io.netty.util.AttributeKey;
+
 import constants.GameConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,6 +44,7 @@ import javax.script.ScriptEngine;
 
 import database.DatabaseConnection;
 import database.DatabaseException;
+import handling.MaplePacket;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.world.MapleMessengerCharacter;
@@ -60,7 +64,7 @@ import tools.packet.LoginPacket;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.mina.common.IoSession;
+
 import server.Timer.PingTimer;
 import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
@@ -76,9 +80,9 @@ public class MapleClient implements Serializable {
             LOGIN_CS_LOGGEDIN = 5,
             CHANGE_CHANNEL = 6;
     public static final int DEFAULT_CHARSLOT = 6;
-    public static final String CLIENT_KEY = "CLIENT";
+    public static final AttributeKey<MapleClient> CLIENT_KEY = AttributeKey.valueOf("Client");
     private transient MapleAESOFB send, receive;
-    private transient IoSession session;
+    private Channel connection;
     private MapleCharacter player;
     private int channel = 1, accId = 1, world, birthday;
     private int charslots = DEFAULT_CHARSLOT;
@@ -99,10 +103,10 @@ public class MapleClient implements Serializable {
     private final transient Lock npc_mutex = new ReentrantLock();
     private final static Lock login_mutex = new ReentrantLock(true);
 
-    public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
+    public MapleClient(MapleAESOFB send, MapleAESOFB receive, Channel connection) {
         this.send = send;
         this.receive = receive;
-        this.session = session;
+        this.connection = connection;
     }
 
     public final MapleAESOFB getReceiveCrypto() {
@@ -113,8 +117,8 @@ public class MapleClient implements Serializable {
         return send;
     }
 
-    public final IoSession getSession() {
-        return session;
+    public final Channel getSession() {
+        return connection;
     }
 
     public final Lock getLock() {
@@ -213,7 +217,7 @@ public class MapleClient implements Serializable {
         try {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM ipbans WHERE ? LIKE CONCAT(ip, '%')");
-            ps.setString(1, session.getRemoteAddress().toString());
+            ps.setString(1, connection.remoteAddress().toString());
             ResultSet rs = ps.executeQuery();
             rs.next();
             if (rs.getInt(1) > 0) {
@@ -459,7 +463,7 @@ public class MapleClient implements Serializable {
 		boolean unLocked = false;
 		for (final MapleClient c: World.Client.getClients()) {
 			if (c.getAccID() == accId && c.isLoggedIn()) {
-				if (!c.getSession().isConnected()) {
+				if (!c.getSession().isActive()) {
 //					c.disconnect(true, c.getChannel() == -10);
 					List<String> charName = c.loadCharacterNames(c.getWorld());
 					for (final String cha : charName) {
@@ -498,7 +502,7 @@ public class MapleClient implements Serializable {
 		}
     }
     public final void unLockDisconnect() {
-        getSession().write(MaplePacketCreator.serverNotice(1, "帳號被他人登入。"));
+        sendPacket(MaplePacketCreator.serverNotice(1, "帳號被他人登入。"));
         disconnect(serverTransition, getChannel() == -10);
         final MapleClient client = this;
         Thread closeSession = new Thread() {
@@ -889,7 +893,7 @@ public class MapleClient implements Serializable {
     }
 
     public final String getSessionIPAddress() {
-        return session.getRemoteAddress().toString().split(":")[0];
+        return connection.remoteAddress().toString().split(":")[0];
     }
 
     public final boolean CheckIPAddress() {
@@ -918,13 +922,13 @@ public class MapleClient implements Serializable {
     }
 
     public final void DebugMessage(final StringBuilder sb) {
-        sb.append(getSession().getRemoteAddress());
+        sb.append(getSession().remoteAddress());
         sb.append("Connected: ");
-        sb.append(getSession().isConnected());
-        sb.append(" Closing: ");
-        sb.append(getSession().isClosing());
+        sb.append(getSession().isActive());
+        sb.append(" Writable: ");
+        sb.append(getSession().isWritable());
         sb.append(" ClientKeySet: ");
-        sb.append(getSession().getAttribute(MapleClient.CLIENT_KEY) != null);
+        sb.append(getSession().attr(MapleClient.CLIENT_KEY) != null);
         sb.append(" loggedin: ");
         sb.append(isLoggedIn());
         sb.append(" has char: ");
@@ -1049,7 +1053,7 @@ public class MapleClient implements Serializable {
 
     public final void sendPing() {
         lastPing = System.currentTimeMillis();
-        session.write(LoginPacket.getPing());
+        connection.write(LoginPacket.getPing());
 
         PingTimer.getInstance().schedule(new Runnable() {
 
@@ -1057,7 +1061,7 @@ public class MapleClient implements Serializable {
             public void run() {
                 try {
                     if (getLatency() < 0) {
-                        if (getSession().isConnected()) {
+                        if (getSession().isActive()) {
                             getSession().close();
                         }
                     }
@@ -1330,5 +1334,9 @@ public class MapleClient implements Serializable {
 
     public void setReceiving(boolean m) {
         this.receiving = m;
+    }
+    
+    public void sendPacket(MaplePacket packet) {
+        this.getSession().writeAndFlush(packet);
     }
 }

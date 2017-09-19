@@ -86,7 +86,7 @@ public class AutobanManager implements Runnable {
                 final StringBuilder sb = new StringBuilder("a/b ");
                 sb.append(c.getPlayer().getName());
                 sb.append(" (IP ");
-                sb.append(c.getSession().getRemoteAddress().toString());
+                sb.append(c.getSession().remoteAddress().toString());
                 sb.append("): ");
                 for (final String s : reasons.get(acc)) {
                     sb.append(s);

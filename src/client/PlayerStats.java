@@ -862,7 +862,7 @@ public class PlayerStats implements Serializable {
         }
         if (changed) {
             chr.equipChanged();
-            chr.getClient().getSession().write(MaplePacketCreator.showItemLevelupEffect());
+            chr.getClient().sendPacket(MaplePacketCreator.showItemLevelupEffect());
             chr.getMap().broadcastMessage(chr, MaplePacketCreator.showForeignItemLevelupEffect(chr.getId()), false);
         }
         return changed;
@@ -879,14 +879,14 @@ public class PlayerStats implements Serializable {
         for (Equip eqq : all) {
             if (eqq.getDurability() == 0) { //> 0 went to negative
                 if (chr.getInventory(MapleInventoryType.EQUIP).isFull()) {
-                    chr.getClient().getSession().write(MaplePacketCreator.getInventoryFull());
-                    chr.getClient().getSession().write(MaplePacketCreator.getShowInventoryFull());
+                    chr.getClient().sendPacket(MaplePacketCreator.getInventoryFull());
+                    chr.getClient().sendPacket(MaplePacketCreator.getShowInventoryFull());
                     return false;
                 }
                 durabilityHandling.remove(eqq);
                 final short pos = chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot();
                 MapleInventoryManipulator.unequip(chr.getClient(), eqq.getPosition(), pos);
-                chr.getClient().getSession().write(MaplePacketCreator.updateSpecialItemUse(eqq, (byte) 1, pos));
+                chr.getClient().sendPacket(MaplePacketCreator.updateSpecialItemUse(eqq, (byte) 1, pos));
             } else {
                 chr.forceReAddItem(eqq.copy(), MapleInventoryType.EQUIPPED);
             }

@@ -22,7 +22,6 @@ package tools;
 
 import java.io.ByteArrayOutputStream;
 
-import org.apache.mina.common.ByteBuffer;
 
 /**
  * Provides a class for manipulating hexadecimal numbers.
@@ -47,22 +46,6 @@ public class HexTool {
         return String.valueOf(retstr);
     }
 
-    /**
-     * Turns a <code>org.apache.mina.common.ByteBuffer</code> into a hexadecimal
-     * string.
-     *
-     * @param buf The <code>org.apache.mina.common.ByteBuffer</code> to convert.
-     * @return The hexadecimal representation of <code>buf</code>
-     */
-    public static final String toString(final ByteBuffer buf) {
-        buf.flip();
-        final byte arr[] = new byte[buf.remaining()];
-        buf.get(arr);
-        String ret = toString(arr);
-        buf.flip();
-        buf.put(arr);
-        return ret;
-    }
 
     /**
      * Turns an integer into a hexadecimal string.

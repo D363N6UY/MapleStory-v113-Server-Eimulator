@@ -115,15 +115,15 @@ public class HiredMerchant extends AbstractPlayerStore {
 					    }
 				    }else{
 					    c.getPlayer().dropMessage(1, "您的背包滿了.");
-					    c.getSession().write(MaplePacketCreator.enableActions());
+					    c.sendPacket(MaplePacketCreator.enableActions());
 				    }
 			    } else {
 				    c.getPlayer().dropMessage(1, "拍賣家有太多錢了.");
-				    c.getSession().write(MaplePacketCreator.enableActions());
+				    c.sendPacket(MaplePacketCreator.enableActions());
 			    }
             } else {
 			    c.getPlayer().dropMessage(1, "您的背包滿了.");
-			    c.getSession().write(MaplePacketCreator.enableActions());
+			    c.sendPacket(MaplePacketCreator.enableActions());
             }
 	    }
     }
@@ -166,14 +166,14 @@ public class HiredMerchant extends AbstractPlayerStore {
     @Override
     public void sendDestroyData(MapleClient client) {
         if (isAvailable()) {
-            client.getSession().write(PlayerShopPacket.destroyHiredMerchant(getOwnerId()));
+            client.sendPacket(PlayerShopPacket.destroyHiredMerchant(getOwnerId()));
         }
     }
 
     @Override
     public void sendSpawnData(MapleClient client) {
         if (isAvailable()) {
-            client.getSession().write(PlayerShopPacket.spawnHiredMerchant(this));
+            client.sendPacket(PlayerShopPacket.spawnHiredMerchant(this));
         }
     }
 
@@ -190,11 +190,11 @@ public class HiredMerchant extends AbstractPlayerStore {
     }
 
     public final void sendBlackList(final MapleClient c) {
-        c.getSession().write(PlayerShopPacket.MerchantBlackListView(blacklist));
+        c.sendPacket(PlayerShopPacket.MerchantBlackListView(blacklist));
     }
 
     public final void sendVisitor(final MapleClient c) {
-        c.getSession().write(PlayerShopPacket.MerchantVisitorView(visitors));
+        c.sendPacket(PlayerShopPacket.MerchantVisitorView(visitors));
     }
 	
 	public final void addMsg(final String msg , final byte slot) {
@@ -203,7 +203,7 @@ public class HiredMerchant extends AbstractPlayerStore {
 	
     public final void SendMsg(final MapleClient c) {
 		for (final Entry<String, Byte> s : MsgList.entrySet()) {
-            c.getSession().write(PlayerShopPacket.shopChat( s.getKey() , s.getValue() ) );
+            c.sendPacket(PlayerShopPacket.shopChat( s.getKey() , s.getValue() ) );
         }
     }
 }

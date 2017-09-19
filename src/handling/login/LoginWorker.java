@@ -35,8 +35,8 @@ public class LoginWorker {
 
     public static void registerClient(final MapleClient c) {
         if (LoginServer.isAdminOnly() && !c.isGm()) {
-            c.getSession().write(MaplePacketCreator.serverNotice(1, "The server is currently set to Admin login only.\r\nWe are currently testing some issues.\r\nPlease try again later."));
-            c.getSession().write(LoginPacket.getLoginFailed(7));
+            c.sendPacket(MaplePacketCreator.serverNotice(1, "The server is currently set to Admin login only.\r\nWe are currently testing some issues.\r\nPlease try again later."));
+            c.sendPacket(LoginPacket.getLoginFailed(7));
             return;
         }
 
@@ -46,7 +46,7 @@ public class LoginWorker {
             int usersOn = 0;
             if (load == null || load.size() <= 0) { // In an unfortunate event that client logged in before load
                 lastUpdate = 0;
-                c.getSession().write(LoginPacket.getLoginFailed(7));
+                c.sendPacket(LoginPacket.getLoginFailed(7));
                 return;
             }
             final double loadFactor = 1200 / ((double) LoginServer.getUserLimit() / load.size());
@@ -60,11 +60,11 @@ public class LoginWorker {
 
         if (c.finishLogin() == 0) {
             if (c.getSecondPassword() == null) {
-                c.getSession().write(LoginPacket.getGenderNeeded(c));
+                c.sendPacket(LoginPacket.getGenderNeeded(c));
             } else {
-                c.getSession().write(LoginPacket.getAuthSuccessRequest(c));
-                c.getSession().write(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
-                c.getSession().write(LoginPacket.getEndOfServerList());
+                c.sendPacket(LoginPacket.getAuthSuccessRequest(c));
+                c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
+                c.sendPacket(LoginPacket.getEndOfServerList());
             }
             c.setIdleTask(PingTimer.getInstance().schedule(new Runnable() {
 
@@ -73,7 +73,7 @@ public class LoginWorker {
                 }
             }, 10 * 60 * 10000));
         } else {
-            c.getSession().write(LoginPacket.getLoginFailed(7));
+            c.sendPacket(LoginPacket.getLoginFailed(7));
             return;
         }
     }

@@ -53,7 +53,7 @@ public class MapleOla extends MapleEvent {
     @Override
     public void onMapLoad(MapleCharacter chr) {
         if (isTimerStarted()) {
-            chr.getClient().getSession().write(MaplePacketCreator.getClock((int) (getTimeLeft() / 1000)));
+            chr.getClient().sendPacket(MaplePacketCreator.getClock((int) (getTimeLeft() / 1000)));
         }
     }
 

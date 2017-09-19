@@ -30,22 +30,16 @@ import java.util.Map;
 
 import database.DatabaseConnection;
 import handling.MapleServerHandler;
-import handling.mina.MapleCodecFactory;
+import handling.netty.ServerConnection;
 import java.rmi.NotBoundException;
-import org.apache.mina.common.ByteBuffer;
-import org.apache.mina.common.SimpleByteBufferAllocator;
-import org.apache.mina.common.IoAcceptor;
 
-import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.transport.socket.nio.SocketAcceptorConfig;
-import org.apache.mina.transport.socket.nio.SocketAcceptor;
 import server.ServerProperties;
 
 public class LoginServer {
 
+    private static ServerConnection init;
     public static int PORT = 8484;
     private static InetSocketAddress InetSocketadd;
-    private static IoAcceptor acceptor;
     private static Map<Integer, Integer> load = new HashMap<Integer, Integer>();
     private static String serverName, eventMessage, bubbleMessage , bubbleMessagePos ;
     private static byte flag;
@@ -70,27 +64,18 @@ public class LoginServer {
         userLimit = Integer.parseInt(ServerProperties.getProperty("tms.UserLimit"));
         serverName = ServerProperties.getProperty("tms.ServerName");
         eventMessage = ServerProperties.getProperty("tms.EventMessage");
-		bubbleMessage = ServerProperties.getProperty("tms.BubbleMessage");
-		bubbleMessagePos = ServerProperties.getProperty("tms.BubbleMessagePos");
+        bubbleMessage = ServerProperties.getProperty("tms.BubbleMessage");
+        bubbleMessagePos = ServerProperties.getProperty("tms.BubbleMessagePos");
         flag = Byte.parseByte(ServerProperties.getProperty("tms.Flag"));
         adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("tms.Admin", "false"));
         maxCharacters = Integer.parseInt(ServerProperties.getProperty("tms.MaxCharacters"));
         PORT = Integer.parseInt(ServerProperties.getProperty("tms.LPort" , "8484"));
 
-        ByteBuffer.setUseDirectBuffers(false);
-        ByteBuffer.setAllocator(new SimpleByteBufferAllocator());
-
-        acceptor = new SocketAcceptor();
-        final SocketAcceptorConfig cfg = new SocketAcceptorConfig();
-        cfg.getSessionConfig().setTcpNoDelay(true);
-        cfg.setDisconnectOnUnbind(true);
-        cfg.getFilterChain().addLast("codec", new ProtocolCodecFilter(new MapleCodecFactory()));
-
         try {
-            InetSocketadd = new InetSocketAddress(PORT);
-            acceptor.bind(InetSocketadd, new MapleServerHandler(-1, false), cfg);
+            init = new ServerConnection(PORT);//could code world here to seperate them
+            init.run();
             System.out.println("Login   1: Listening on port " + PORT);
-        } catch (IOException e) {
+        } catch (final Exception e) {
             System.err.println("Binding to port " + PORT + " failed" + e);
         }
     }
@@ -100,7 +85,7 @@ public class LoginServer {
             return;
         }
         System.out.println("Shutting down login...");
-        acceptor.unbindAll();
+        init.close();
         finishedShutdown = true; //nothing. lol
     }
 
@@ -157,9 +142,9 @@ public class LoginServer {
         userLimit = newLimit;
     }
 
-    public static final int getNumberOfSessions() {
-        return acceptor.getManagedSessions(InetSocketadd).size();
-    }
+//    public static final int getNumberOfSessions() {
+//        return acceptor.getManagedSessions(InetSocketadd).size();
+//    }
 
     public static final boolean isAdminOnly() {
         return adminOnly;

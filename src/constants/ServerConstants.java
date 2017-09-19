@@ -53,6 +53,7 @@ public class ServerConstants {
     public static final short MAPLE_VERSION = 113;
     public static final String MAPLE_PATCH = "1";
     public static final boolean Use_Fixed_IV = false;
+    public static final int MAXIMUM_CONNECTIONS = 600;
     public static final int MIN_MTS = 110;
     public static final int MTS_BASE = 100; //+1000 to everything in MSEA but cash is costly here
     public static final int MTS_TAX = 10; //+% to everything

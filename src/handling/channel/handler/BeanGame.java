@@ -21,7 +21,7 @@ public class BeanGame {
             力度 = slea.readShort();
             chr.setBeansRange(力度);
             //System.out.println("??��?��?��?�度1�?"+??�度);
-            //c.getSession().write(MaplePacketCreator.enableActions());
+            //c.sendPacket(MaplePacketCreator.enableActions());
         } else if (type == 2) { //没�?�在??��?��??
 /*  30: 37 */ if ((type == 11) || (type == 0)) /*  31:    */ {
                 /*  32: 42 */ 力度 = slea.readShort();
@@ -60,7 +60,7 @@ public class BeanGame {
             byte size = slea.readByte();
             short Pos = slea.readShort();
             byte Type = slea.readByte();
-            /*  66: 91 */ c.getSession().write(MaplePacketCreator.showBeans(size, Pos, Type));
+            /*  66: 91 */ c.sendPacket(MaplePacketCreator.showBeans(size, Pos, Type));
             /*  67:    */        }
         /*  68:    */    }
 
@@ -112,7 +112,7 @@ public class BeanGame {
     }
 
     public static final void BeanGame2(SeekableLittleEndianAccessor slea, MapleClient c) {
-        c.getSession().write(MaplePacketCreator.updateBeans(c.getPlayer().getId(), c.getPlayer().getBeans()));
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), c.getPlayer().getBeans()));
+        c.sendPacket(MaplePacketCreator.enableActions());
     }
 }

@@ -37,7 +37,7 @@ import server.ServerProperties;
  */
 public class DatabaseConnection {
 
-    private static final ThreadLocal<Connection> con = new ThreadLocalConnection();
+    private static ThreadLocal<Connection> con = new ThreadLocalConnection();
     public static final int CLOSE_CURRENT_RESULT = 1;
     /**
      * The constant indicating that the current <code>ResultSet</code> object
@@ -84,38 +84,54 @@ public class DatabaseConnection {
     public static final int NO_GENERATED_KEYS = 2;
 
     public static final Connection getConnection() {
-        return con.get();
+        Connection conn = con.get();
+        try {
+            if (conn == null || conn.isClosed()) { // maybe server restarted
+                conn = NewConnection();
+                con.set(conn);
+                return conn;
+            }
+        } catch (SQLException e) {
+            
+        }
+        return conn;
     }
 
     public static final void closeAll() throws SQLException {
         for (final Connection con : ThreadLocalConnection.allConnections) {
             con.close();
+            
         }
     }
 
+    public static final Connection NewConnection(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver"); // touch the mysql driver
+        } catch (final ClassNotFoundException e) {
+            System.err.println("ERROR" + e);
+        }
+        try {
+            Properties props = new Properties();
+            props.put("user", ServerProperties.getProperty("tms.User"));
+            props.put("password", ServerProperties.getProperty("tms.Pass"));
+            props.put("autoReconnect", "true");
+            final Connection con = DriverManager.getConnection(ServerProperties.getProperty("tms.Url"), props);
+            return con;
+        } catch (SQLException e) {
+            System.err.println("ERROR" + e);
+            return null;
+        }
+    }
     private static final class ThreadLocalConnection extends ThreadLocal<Connection> {
 
         public static final Collection<Connection> allConnections = new LinkedList<Connection>();
 
         @Override
         protected final Connection initialValue() {
-            try {
-                Class.forName("com.mysql.jdbc.Driver"); // touch the mysql driver
-            } catch (final ClassNotFoundException e) {
-                System.err.println("ERROR" + e);
-            }
-            try {
-                Properties props = new Properties();
-                props.put("user", ServerProperties.getProperty("tms.User"));
-                props.put("password", ServerProperties.getProperty("tms.Pass"));
-                props.put("autoReconnect", "true");
-                final Connection con = DriverManager.getConnection(ServerProperties.getProperty("tms.Url"), props);
-                allConnections.add(con);
+                final Connection con = NewConnection();
+                if(con != null)
+                    allConnections.add(con);
                 return con;
-            } catch (SQLException e) {
-                System.err.println("ERROR" + e);
-                return null;
-            }
         }
     }
 }

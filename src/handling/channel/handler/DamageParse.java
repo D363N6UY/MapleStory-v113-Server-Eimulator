@@ -67,7 +67,7 @@ public class DamageParse {
         }
         if (attack.skill != 0) {
             if (effect == null) {
-                player.getClient().getSession().write(MaplePacketCreator.enableActions());
+                player.getClient().sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             if (GameConstants.isMulungSkill(attack.skill)) {

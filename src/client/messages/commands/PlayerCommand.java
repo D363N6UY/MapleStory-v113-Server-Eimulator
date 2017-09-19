@@ -75,7 +75,7 @@ public class PlayerCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             NPCScriptManager.getInstance().dispose(c);
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             c.getPlayer().dropMessage(1, "解卡完畢.");
             c.getPlayer().dropMessage(6, "當前時間是" + FileoutputUtil.CurrentReadable_Time() + " GMT+8 | 經驗值倍率 " + (Math.round(c.getPlayer().getEXPMod()) * 100) * Math.round(c.getPlayer().getStat().expBuff / 100.0) + "%, 掉寶倍率 " + (Math.round(c.getPlayer().getDropMod()) * 100) * Math.round(c.getPlayer().getStat().dropBuff / 100.0) + "%, 楓幣倍率 " + Math.round(c.getPlayer().getStat().mesoBuff / 100.0) * 100 + "%");
             c.getPlayer().dropMessage(6, "當前延遲 " + c.getPlayer().getClient().getLatency() + " 毫秒");

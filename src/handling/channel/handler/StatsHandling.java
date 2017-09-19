@@ -41,7 +41,7 @@ public class StatsHandling {
 
     public static final void DistributeAP(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         final List<Pair<MapleStat, Integer>> statupdate = new ArrayList<Pair<MapleStat, Integer>>(2);
-        c.getSession().write(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
+        c.sendPacket(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
         chr.updateTick(slea.readInt());
 
         final PlayerStats stat = chr.getStat();
@@ -166,12 +166,12 @@ public class StatsHandling {
                     statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXMP, (int) maxmp));
                     break;
                 default:
-                    c.getSession().write(MaplePacketCreator.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, chr.getJob()));
+                    c.sendPacket(MaplePacketCreator.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, chr.getJob()));
                     return;
             }
             chr.setRemainingAp((short) (chr.getRemainingAp() - 1));
             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.AVAILABLEAP, (int) chr.getRemainingAp()));
-            c.getSession().write(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
+            c.sendPacket(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
         }
     }
 
@@ -265,7 +265,7 @@ public class StatsHandling {
                 final int skillbook = GameConstants.getSkillBookForSkill(skillid);
                 chr.setRemainingSp(chr.getRemainingSp(skillbook) - 1, skillbook);
             }
-            c.getSession().write(MaplePacketCreator.updateSp(chr, false));
+            c.sendPacket(MaplePacketCreator.updateSp(chr, false));
             chr.changeSkillLevel(skill, (byte) (curLevel + 1), chr.getMasterLevel(skill));
         } else if (!skill.canBeLearnedBy(chr.getJob())) {
 //            AutobanManager.getInstance().addPoints(c, 1000, 0, "Trying to learn a skill for a different job (" + skillid + ")");
@@ -292,7 +292,7 @@ public class StatsHandling {
         final PlayerStats playerst = chr.getStat();
 
         List<Pair<MapleStat, Integer>> statupdate = new ArrayList<Pair<MapleStat, Integer>>(2);
-        c.getSession().write(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
+        c.sendPacket(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
 
         if (chr.getRemainingAp() == amount + amount2) {
             switch (PrimaryStat) {
@@ -325,7 +325,7 @@ public class StatsHandling {
                     statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, (int) playerst.getLuk()));
                     break;
                 default:
-                    c.getSession().write(MaplePacketCreator.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, chr.getJob()));
+                    c.sendPacket(MaplePacketCreator.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, chr.getJob()));
                     return;
             }
             switch (SecondaryStat) {
@@ -358,12 +358,12 @@ public class StatsHandling {
                     statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, (int) playerst.getLuk()));
                     break;
                 default:
-                    c.getSession().write(MaplePacketCreator.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, chr.getJob()));
+                    c.sendPacket(MaplePacketCreator.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, chr.getJob()));
                     return;
             }
             chr.setRemainingAp((short) (chr.getRemainingAp() - (amount + amount2)));
             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.AVAILABLEAP, (int) chr.getRemainingAp()));
-            c.getSession().write(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
+            c.sendPacket(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
         }
     }
 }

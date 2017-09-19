@@ -358,8 +358,8 @@ public class MapScriptMethods {
                 //926010070-926010089 - 50 Yetis (specialized? immortality)
                 //TODO also find positions to spawn these at
                 c.getPlayer().getMap().resetFully();
-                c.getSession().write(MaplePacketCreator.showEffect("killing/bonus/bonus"));
-                c.getSession().write(MaplePacketCreator.showEffect("killing/bonus/stage"));
+                c.sendPacket(MaplePacketCreator.showEffect("killing/bonus/bonus"));
+                c.sendPacket(MaplePacketCreator.showEffect("killing/bonus/stage"));
                 Point pos1 = null, pos2 = null, pos3 = null;
                 int spawnPer = 0;
                 int mobId = 0;
@@ -419,7 +419,7 @@ public class MapScriptMethods {
                     }
                     c.getPlayer().getMap().spawnMonsterWithEffectBelow(shammos, new Point(c.getPlayer().getMap().getPortal(0).getPosition()), 12);
                     shammos.switchController(c.getPlayer(), false);
-                    c.getSession().write(MaplePacketCreator.getNodeProperties(shammos, c.getPlayer().getMap()));
+                    c.sendPacket(MaplePacketCreator.getNodeProperties(shammos, c.getPlayer().getMap()));
 
                 }
                 break;
@@ -479,7 +479,7 @@ public class MapScriptMethods {
                 break;
             }
             case shammos_Enter: { //nothing to go on inside the map
-                c.getSession().write(MaplePacketCreator.sendPyramidEnergy("shammos_LastStage", String.valueOf((c.getPlayer().getMapId() % 1000) / 100)));
+                c.sendPacket(MaplePacketCreator.sendPyramidEnergy("shammos_LastStage", String.valueOf((c.getPlayer().getMapId() % 1000) / 100)));
                 if (c.getPlayer().getEventInstance() != null && c.getPlayer().getMapId() == 921120500) {
                     NPCScriptManager.getInstance().dispose(c); //only boss map.
                     NPCScriptManager.getInstance().start(c, 2022006);
@@ -495,13 +495,13 @@ public class MapScriptMethods {
                 break;
             }
             case PRaid_W_Enter: {
-                c.getSession().write(MaplePacketCreator.sendPyramidEnergy("PRaid_expPenalty", "0"));
-                c.getSession().write(MaplePacketCreator.sendPyramidEnergy("PRaid_ElapssedTimeAtField", "0"));
-                c.getSession().write(MaplePacketCreator.sendPyramidEnergy("PRaid_Point", "-1"));
-                c.getSession().write(MaplePacketCreator.sendPyramidEnergy("PRaid_Bonus", "-1"));
-                c.getSession().write(MaplePacketCreator.sendPyramidEnergy("PRaid_Total", "-1"));
-                c.getSession().write(MaplePacketCreator.sendPyramidEnergy("PRaid_Team", ""));
-                c.getSession().write(MaplePacketCreator.sendPyramidEnergy("PRaid_IsRevive", "0"));
+                c.sendPacket(MaplePacketCreator.sendPyramidEnergy("PRaid_expPenalty", "0"));
+                c.sendPacket(MaplePacketCreator.sendPyramidEnergy("PRaid_ElapssedTimeAtField", "0"));
+                c.sendPacket(MaplePacketCreator.sendPyramidEnergy("PRaid_Point", "-1"));
+                c.sendPacket(MaplePacketCreator.sendPyramidEnergy("PRaid_Bonus", "-1"));
+                c.sendPacket(MaplePacketCreator.sendPyramidEnergy("PRaid_Total", "-1"));
+                c.sendPacket(MaplePacketCreator.sendPyramidEnergy("PRaid_Team", ""));
+                c.sendPacket(MaplePacketCreator.sendPyramidEnergy("PRaid_IsRevive", "0"));
                 c.getPlayer().writePoint("PRaid_Point", "-1");
                 c.getPlayer().writeStatus("Red_Stage", "1");
                 c.getPlayer().writeStatus("Blue_Stage", "1");
@@ -538,16 +538,16 @@ public class MapScriptMethods {
             break;
             }
             case evanAlone: { //no idea
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 break;
             }
             case startEreb:
             case mirrorCave:
             case babyPigMap:
             case evanleaveD: {
-                c.getSession().write(UIPacket.IntroDisableUI(false));
-                c.getSession().write(UIPacket.IntroLock(false));
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(UIPacket.IntroDisableUI(false));
+                c.sendPacket(UIPacket.IntroLock(false));
+                c.sendPacket(MaplePacketCreator.enableActions());
                 break;
             }
             case dojang_Msg: {
@@ -595,9 +595,9 @@ public class MapScriptMethods {
                         data = "Effect/Direction4.img/promotion/Scene3";
                         break;
                     case 900090004:
-                        c.getSession().write(UIPacket.IntroDisableUI(false));
-                        c.getSession().write(UIPacket.IntroLock(false));
-                        c.getSession().write(MaplePacketCreator.enableActions());
+                        c.sendPacket(UIPacket.IntroDisableUI(false));
+                        c.sendPacket(UIPacket.IntroLock(false));
+                        c.sendPacket(MaplePacketCreator.enableActions());
                         final MapleMap mapto = c.getChannelServer().getMapFactory().getMap(900010000);
                         c.getPlayer().changeMap(mapto, mapto.getPortal(0));
                         return;
@@ -605,18 +605,18 @@ public class MapScriptMethods {
                 showIntro(c, data);
                 break;
             case TD_MC_title: {
-                c.getSession().write(UIPacket.IntroDisableUI(false));
-                c.getSession().write(UIPacket.IntroLock(false));
-                c.getSession().write(MaplePacketCreator.enableActions());
-                c.getSession().write(UIPacket.MapEff("temaD/enter/mushCatle"));
+                c.sendPacket(UIPacket.IntroDisableUI(false));
+                c.sendPacket(UIPacket.IntroLock(false));
+                c.sendPacket(MaplePacketCreator.enableActions());
+                c.sendPacket(UIPacket.MapEff("temaD/enter/mushCatle"));
                 break;
             }
             case explorationPoint: {
                 if (c.getPlayer().getMapId() == 104000000) {
-                    c.getSession().write(UIPacket.IntroDisableUI(false));
-                    c.getSession().write(UIPacket.IntroLock(false));
-                    c.getSession().write(MaplePacketCreator.enableActions());
-                    c.getSession().write(UIPacket.MapNameDisplay(c.getPlayer().getMapId()));
+                    c.sendPacket(UIPacket.IntroDisableUI(false));
+                    c.sendPacket(UIPacket.IntroLock(false));
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    c.sendPacket(UIPacket.MapNameDisplay(c.getPlayer().getMapId()));
                 }
                 MedalQuest m = null;
                 for (MedalQuest mq : MedalQuest.values()) {
@@ -667,16 +667,16 @@ public class MapScriptMethods {
                         MapleQuest.getInstance(m.questid - 1995).forceStart(c.getPlayer(), 0, String.valueOf(number));
                         c.getPlayer().dropMessage(-1, "訪問 " + number + "/" + m.maps.length + " 個地區.");
                         c.getPlayer().dropMessage(-1, "稱號 " + String.valueOf(m) + " 已完成了");
-                        c.getSession().write(MaplePacketCreator.showQuestMsg("稱號 " + String.valueOf(m) + " 已完成訪問 " + number + "/" + m.maps.length + " 個地區"));
+                        c.sendPacket(MaplePacketCreator.showQuestMsg("稱號 " + String.valueOf(m) + " 已完成訪問 " + number + "/" + m.maps.length + " 個地區"));
                     }
                 }
                 break;
             }
             case go10000:
             case go1020000:
-                c.getSession().write(UIPacket.IntroDisableUI(false));
-                c.getSession().write(UIPacket.IntroLock(false));
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(UIPacket.IntroDisableUI(false));
+                c.sendPacket(UIPacket.IntroLock(false));
+                c.sendPacket(MaplePacketCreator.enableActions());
             case go20000:
             case go30000:
             case go40000:
@@ -688,7 +688,7 @@ public class MapScriptMethods {
             case go1010200:
             case go1010300:
             case go1010400: {
-                c.getSession().write(UIPacket.MapNameDisplay(c.getPlayer().getMapId()));
+                c.sendPacket(UIPacket.MapNameDisplay(c.getPlayer().getMapId()));
                 break;
             }
             case goArcher: {
@@ -753,16 +753,16 @@ public class MapScriptMethods {
                 c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000016), (byte) -1, (byte) 0);
                 c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000017), (byte) -1, (byte) 0);
                 c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000018), (byte) -1, (byte) 0);
-                c.getSession().write(UIPacket.ShowWZEffect("Effect/Direction1.img/aranTutorial/ClickLirin"));
-                c.getSession().write(UIPacket.IntroDisableUI(false));
-                c.getSession().write(UIPacket.IntroLock(false));
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(UIPacket.ShowWZEffect("Effect/Direction1.img/aranTutorial/ClickLirin"));
+                c.sendPacket(UIPacket.IntroDisableUI(false));
+                c.sendPacket(UIPacket.IntroLock(false));
+                c.sendPacket(MaplePacketCreator.enableActions());
                 break;
             }
             case rienArrow: {
                 if (c.getPlayer().getInfoQuest(21019).equals("miss=o;helper=clear")) {
                     c.getPlayer().updateInfoQuest(21019, "miss=o;arr=o;helper=clear");
-                    c.getSession().write(UIPacket.AranTutInstructionalBalloon("Effect/OnUserEff.img/guideEffect/aranTutorial/tutorialArrow3"));
+                    c.sendPacket(UIPacket.AranTutInstructionalBalloon("Effect/OnUserEff.img/guideEffect/aranTutorial/tutorialArrow3"));
                 }
                 break;
             }
@@ -770,8 +770,8 @@ public class MapScriptMethods {
                 if (c.getPlayer().getQuestStatus(21101) == 2 && c.getPlayer().getInfoQuest(21019).equals("miss=o;arr=o;helper=clear")) {
                     c.getPlayer().updateInfoQuest(21019, "miss=o;arr=o;ck=1;helper=clear");
                 }
-                c.getSession().write(UIPacket.IntroDisableUI(false));
-                c.getSession().write(UIPacket.IntroLock(false));
+                c.sendPacket(UIPacket.IntroDisableUI(false));
+                c.sendPacket(UIPacket.IntroLock(false));
                 break;
             }
             case check_count: {
@@ -789,9 +789,9 @@ public class MapScriptMethods {
             }
             case Massacre_result: { //clear, give exp, etc.
                 //if (c.getPlayer().getPyramidSubway() == null) {
-                c.getSession().write(MaplePacketCreator.showEffect("killing/fail"));
+                c.sendPacket(MaplePacketCreator.showEffect("killing/fail"));
                 //} else {
-                //	c.getSession().write(MaplePacketCreator.showEffect("killing/clear"));
+                //	c.sendPacket(MaplePacketCreator.showEffect("killing/clear"));
                 //}
                 //left blank because pyramidsubway handles this.
                 break;
@@ -843,20 +843,20 @@ public class MapScriptMethods {
     }
 
     private static void showIntro(final MapleClient c, final String data) {
-        c.getSession().write(UIPacket.IntroDisableUI(true));
-        c.getSession().write(UIPacket.IntroLock(true));
-        c.getSession().write(UIPacket.ShowWZEffect(data));
+        c.sendPacket(UIPacket.IntroDisableUI(true));
+        c.sendPacket(UIPacket.IntroLock(true));
+        c.sendPacket(UIPacket.ShowWZEffect(data));
     }
 
     private static void sendDojoClock(MapleClient c, int time) {
-        c.getSession().write(MaplePacketCreator.getClock(time));
+        c.sendPacket(MaplePacketCreator.getClock(time));
     }
 
     private static void sendDojoStart(MapleClient c, int stage) {
-        c.getSession().write(MaplePacketCreator.environmentChange("Dojang/start", 4));
-        c.getSession().write(MaplePacketCreator.environmentChange("dojang/start/stage", 3));
-        c.getSession().write(MaplePacketCreator.environmentChange("dojang/start/number/" + stage, 3));
-        c.getSession().write(MaplePacketCreator.trembleEffect(0, 1));
+        c.sendPacket(MaplePacketCreator.environmentChange("Dojang/start", 4));
+        c.sendPacket(MaplePacketCreator.environmentChange("dojang/start/stage", 3));
+        c.sendPacket(MaplePacketCreator.environmentChange("dojang/start/number/" + stage, 3));
+        c.sendPacket(MaplePacketCreator.trembleEffect(0, 1));
     }
 
     private static void handlePinkBeanStart(MapleClient c) {

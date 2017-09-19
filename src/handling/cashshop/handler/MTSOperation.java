@@ -28,13 +28,13 @@ public class MTSOperation {
         if (op == 1) { //put up for sale
             final byte invType = slea.readByte(); //1 = equip 2 = everything else
             if (invType != 1 && invType != 2) { //pet?
-                c.getSession().write(MTSCSPacket.getMTSFailSell());
+                c.sendPacket(MTSCSPacket.getMTSFailSell());
                 doMTSPackets(cart, c);
                 return;
             }
             final int itemid = slea.readInt(); //itemid
             if (slea.readByte() != 0) {
-                c.getSession().write(MTSCSPacket.getMTSFailSell());
+                c.sendPacket(MTSCSPacket.getMTSFailSell());
                 doMTSPackets(cart, c);
                 return;//we don't like uniqueIDs
             }
@@ -73,14 +73,14 @@ public class MTSOperation {
             final MapleInventoryType type = GameConstants.getInventoryType(itemid);
             final IItem item = c.getPlayer().getInventory(type).getItem(slot).copy();
             if (ii.isCash(itemid) || quantity <= 0 || item == null || item.getQuantity() <= 0 || item.getItemId() != itemid || item.getUniqueId() > 0 || item.getQuantity() < quantity || price < ServerConstants.MIN_MTS || c.getPlayer().getMeso() < ServerConstants.MTS_MESO || cart.getNotYetSold().size() >= 10 || ii.isDropRestricted(itemid) || ii.isAccountShared(itemid) || item.getExpiration() > -1 || item.getFlag() > 0) {
-                c.getSession().write(MTSCSPacket.getMTSFailSell());
+                c.sendPacket(MTSCSPacket.getMTSFailSell());
                 doMTSPackets(cart, c);
                 return;
             }
             if (type == MapleInventoryType.EQUIP) {
                 final Equip eq = (Equip) item;
                 if (eq.getState() > 0 || eq.getEnhance() > 0 || eq.getDurability() > -1) {
-                    c.getSession().write(MTSCSPacket.getMTSFailSell());
+                    c.sendPacket(MTSCSPacket.getMTSFailSell());
                     doMTSPackets(cart, c);
                     return;
                 }
@@ -93,14 +93,14 @@ public class MTSOperation {
             MTSStorage.getInstance().addToBuyNow(cart, item, price, c.getPlayer().getId(), c.getPlayer().getName(), expiration);
             MapleInventoryManipulator.removeFromSlot(c, type, slot, quantity, false);
             c.getPlayer().gainMeso(-ServerConstants.MTS_MESO, false);
-            c.getSession().write(MTSCSPacket.getMTSConfirmSell());
+            c.sendPacket(MTSCSPacket.getMTSConfirmSell());
         } else if (op == 4) { //change page/tab
             cart.changeInfo(slea.readInt(), slea.readInt(), slea.readInt());
         } else if (op == 6) { //cancel sale
             if (!MTSStorage.getInstance().removeFromBuyNow(slea.readInt(), c.getPlayer().getId(), true)) {
-                c.getSession().write(MTSCSPacket.getMTSFailCancel());
+                c.sendPacket(MTSCSPacket.getMTSFailCancel());
             } else {
-                c.getSession().write(MTSCSPacket.getMTSConfirmCancel());
+                c.sendPacket(MTSCSPacket.getMTSConfirmCancel());
                 sendMTSPackets(cart, c, true);
                 return;
             }
@@ -122,30 +122,30 @@ public class MTSOperation {
                         c.getPlayer().addPet(item_.getPet());
                     }
                     cart.removeFromInventory(item);
-                    c.getSession().write(MTSCSPacket.getMTSConfirmTransfer(item_.getQuantity(), pos)); //IF this is actually pos and pos
+                    c.sendPacket(MTSCSPacket.getMTSConfirmTransfer(item_.getQuantity(), pos)); //IF this is actually pos and pos
                     return;
                 } else {
                     //System.out.println("addByItem is less than 0");
-                    c.getSession().write(MTSCSPacket.getMTSFailBuy());
+                    c.sendPacket(MTSCSPacket.getMTSFailBuy());
                 }
             } else {
                 //System.out.println("CheckSpace return false");
-                c.getSession().write(MTSCSPacket.getMTSFailBuy());
+                c.sendPacket(MTSCSPacket.getMTSFailBuy());
             }
         } else if (op == 8) { //add to cart
             final int id = slea.readInt();
             if (MTSStorage.getInstance().checkCart(id, c.getPlayer().getId()) && cart.addToCart(id)) {
-                c.getSession().write(MTSCSPacket.addToCartMessage(false, false));
+                c.sendPacket(MTSCSPacket.addToCartMessage(false, false));
             } else {
-                c.getSession().write(MTSCSPacket.addToCartMessage(true, false));
+                c.sendPacket(MTSCSPacket.addToCartMessage(true, false));
             }
         } else if (op == 9) { //delete from cart
             final int id = slea.readInt();
             if (cart.getCart().contains(id)) {
                 cart.removeFromCart(id);
-                c.getSession().write(MTSCSPacket.addToCartMessage(false, true));
+                c.sendPacket(MTSCSPacket.addToCartMessage(false, true));
             } else {
-                c.getSession().write(MTSCSPacket.addToCartMessage(true, true));
+                c.sendPacket(MTSCSPacket.addToCartMessage(true, true));
             }
         } else if (op == 15 || op == 16) { //buyNow, buy from cart
             final MTSItemInfo mts = MTSStorage.getInstance().getSingleItem(slea.readInt());
@@ -154,17 +154,17 @@ public class MTSOperation {
                     if (MTSStorage.getInstance().removeFromBuyNow(mts.getId(), c.getPlayer().getId(), false)) {
                         c.getPlayer().modifyCSPoints(2, -mts.getRealPrice(), false);
                         MTSStorage.getInstance().getCart(mts.getCharacterId()).increaseOwedNX(mts.getPrice());
-                        c.getSession().write(MTSCSPacket.getMTSConfirmBuy());
+                        c.sendPacket(MTSCSPacket.getMTSConfirmBuy());
                         sendMTSPackets(cart, c, true);
                         return;
                     } else {
-                        c.getSession().write(MTSCSPacket.getMTSFailBuy());
+                        c.sendPacket(MTSCSPacket.getMTSFailBuy());
                     }
                 } else {
-                    c.getSession().write(MTSCSPacket.getMTSFailBuy());
+                    c.sendPacket(MTSCSPacket.getMTSFailBuy());
                 }
             } else {
-                c.getSession().write(MTSCSPacket.getMTSFailBuy());
+                c.sendPacket(MTSCSPacket.getMTSFailBuy());
             }
 	} else if (op == 3 || op == 17 ){
 		c.getPlayer().dropMessage(1, "此功能暫不開放");		
@@ -176,7 +176,7 @@ public class MTSOperation {
 
     public static void MTSUpdate(final MTSCart cart, final MapleClient c) {
         c.getPlayer().modifyCSPoints(2, MTSStorage.getInstance().getCart(c.getPlayer().getId()).getSetOwedNX(), false);
-        c.getSession().write(MTSCSPacket.getMTSWantedListingOver(0, 0));
+        c.sendPacket(MTSCSPacket.getMTSWantedListingOver(0, 0));
         doMTSPackets(cart, c);
     }
 
@@ -185,11 +185,11 @@ public class MTSOperation {
     }
 
     private static void sendMTSPackets(final MTSCart cart, final MapleClient c, final boolean changed) {
-        c.getSession().write(MTSStorage.getInstance().getCurrentMTS(cart));
-        c.getSession().write(MTSStorage.getInstance().getCurrentNotYetSold(cart));
-        c.getSession().write(MTSStorage.getInstance().getCurrentTransfer(cart, changed));
-        c.getSession().write(MTSCSPacket.showMTSCash(c.getPlayer()));
-        c.getSession().write(MTSCSPacket.enableCSUse());
+        c.sendPacket(MTSStorage.getInstance().getCurrentMTS(cart));
+        c.sendPacket(MTSStorage.getInstance().getCurrentNotYetSold(cart));
+        c.sendPacket(MTSStorage.getInstance().getCurrentTransfer(cart, changed));
+        c.sendPacket(MTSCSPacket.showMTSCash(c.getPlayer()));
+        c.sendPacket(MTSCSPacket.enableCSUse());
         MTSStorage.getInstance().checkExpirations();
     }
 }

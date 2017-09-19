@@ -95,7 +95,7 @@ public class BBSHandler {
         if (c.getPlayer().getGuildId() <= 0) {
             return;
         }
-        c.getSession().write(MaplePacketCreator.BBSThreadList(World.Guild.getBBS(c.getPlayer().getGuildId()), start));
+        c.sendPacket(MaplePacketCreator.BBSThreadList(World.Guild.getBBS(c.getPlayer().getGuildId()), start));
     }
 
     private static final void newBBSReply(final MapleClient c, final int localthreadid, final String text) {
@@ -145,7 +145,7 @@ public class BBSHandler {
         if (bbsList != null) {
             for (MapleBBSThread t : bbsList) {
                 if (t != null && t.localthreadID == localthreadid) {
-                    c.getSession().write(MaplePacketCreator.showThread(t));
+                    c.sendPacket(MaplePacketCreator.showThread(t));
                 }
             }
         }

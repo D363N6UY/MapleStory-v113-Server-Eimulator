@@ -61,25 +61,25 @@ public class HiredFishingHandler {
                     final HiredFishing fishing = World.hasFishing(c.getPlayer().getAccountID());
 					final MerchItemPackage pack = loadItemFrom_Database(c.getPlayer().getId(), c.getPlayer().getAccountID());
                     if ( fishing == null && pack == null) {
-                        c.getSession().write(PlayerShopPacket.sendFishBox());
+                        c.sendPacket(PlayerShopPacket.sendFishBox());
                     } else if( fishing == null && pack != null){
                         if(pack.getItems().size() <= 0){
 							if (!check(c.getPlayer(), pack)) {
-                                c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x21));
+                                c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x21));
                                 return;
                             }
                             if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
                                 c.getPlayer().gainMeso(pack.getMesos(), false);
-                                c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                                c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                             } else {
                                 c.getPlayer().dropMessage(1, "An unknown error occured.");
                             }
 						} else {
-							c.getSession().write(PlayerShopPacket.fishingItemStore_ItemData(pack));
+							c.sendPacket(PlayerShopPacket.fishingItemStore_ItemData(pack));
 						}
                     } else {
                         //或許得做頻道判斷
-                        c.getSession().write(PlayerShopPacket.closeHiredFishing(fishing));
+                        c.sendPacket(PlayerShopPacket.closeHiredFishing(fishing));
 					}
                     break;
                 default:
@@ -126,17 +126,17 @@ public class HiredFishingHandler {
                 c.getPlayer().setConversation(0);
             } else if (pack.getItems().size() <= 0) { //error fix for complainers.
                 if (!check(c.getPlayer(), pack)) {
-                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x21));
+                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x21));
                     return;
                 }
                 if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
                     c.getPlayer().gainMeso(pack.getMesos(), false);
-                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                 } else {
                     c.getPlayer().dropMessage(1, "An unknown error occured.");
                 }
             } else {
-                c.getSession().write(PlayerShopPacket.fishingItemStore_ItemData(pack));
+                c.sendPacket(PlayerShopPacket.fishingItemStore_ItemData(pack));
             }
         }
 		return ;
@@ -152,7 +152,7 @@ public class HiredFishingHandler {
                 if (c.getPlayer().getConversation() != 6) {
                     return;
                 }
-                c.getSession().write(PlayerShopPacket.merchItemStore((byte) 0x24));
+                c.sendPacket(PlayerShopPacket.merchItemStore((byte) 0x24));
                 break;
             }
             case 26: { // Take out item
@@ -166,7 +166,7 @@ public class HiredFishingHandler {
                     return;
                 }
                 if (!check(c.getPlayer(), pack)) {
-                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x21));
+                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x21));
                     return;
                 }
                 if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
@@ -174,7 +174,7 @@ public class HiredFishingHandler {
                     for (IItem item : pack.getItems()) {
                         MapleInventoryManipulator.addFromDrop(c, item, false);
                     }
-                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                 } else {
                     c.getPlayer().dropMessage(1, "An unknown error occured.");
                 }

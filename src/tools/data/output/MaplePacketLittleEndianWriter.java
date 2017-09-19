@@ -21,6 +21,7 @@
 package tools.data.output;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
 
 import handling.ByteArrayMaplePacket;
 import handling.MaplePacket;

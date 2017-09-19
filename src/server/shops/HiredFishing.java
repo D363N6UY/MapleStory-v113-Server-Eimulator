@@ -73,7 +73,7 @@ public class HiredFishing extends AbstractPlayerStore {
     public void buy(MapleClient c, int item, short quantity) {
         // hack ?
         c.getPlayer().dropMessage(1, "Hacking?");
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
         return;
     }
 
@@ -115,14 +115,14 @@ public class HiredFishing extends AbstractPlayerStore {
     @Override
     public void sendDestroyData(MapleClient client) {
         if (isAvailable()) {
-            client.getSession().write(PlayerShopPacket.destroyHiredMerchant(getOwnerId()));
+            client.sendPacket(PlayerShopPacket.destroyHiredMerchant(getOwnerId()));
         }
     }
 
     @Override
     public void sendSpawnData(MapleClient client) {
         if (isAvailable()) {
-            client.getSession().write(PlayerShopPacket.spawnHiredFishing(this));
+            client.sendPacket(PlayerShopPacket.spawnHiredFishing(this));
         }
     }
 	

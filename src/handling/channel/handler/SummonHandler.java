@@ -206,7 +206,7 @@ public class SummonHandler {
                 mob.damage(chr, toDamage, true);
                 chr.checkMonsterAggro(mob);
                 if (!mob.isAlive()) {
-                    chr.getClient().getSession().write(MobPacket.killMonster(mob.getObjectId(), 1));
+                    chr.getClient().sendPacket(MobPacket.killMonster(mob.getObjectId(), 1));
                 }
             } else {
                 AutobanManager.getInstance().autoban(c, "High Summon Damage (" + toDamage + " to " + attackEntry.getMonster().getId() + ")");
