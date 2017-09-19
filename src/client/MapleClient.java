@@ -463,7 +463,7 @@ public class MapleClient implements Serializable {
 		boolean unLocked = false;
 		for (final MapleClient c: World.Client.getClients()) {
 			if (c.getAccID() == accId && c.isLoggedIn()) {
-				if (!c.getSession().isActive()) {
+				if (c.getSession().isActive()) {
 //					c.disconnect(true, c.getChannel() == -10);
 					List<String> charName = c.loadCharacterNames(c.getWorld());
 					for (final String cha : charName) {
@@ -856,8 +856,15 @@ public class MapleClient implements Serializable {
             } else {
                 final int ch = World.Find.findChannel(idz);
                 if (ch > 0) {
-                    disconnect(RemoveInChannelServer, false);//u lie
-                    return;
+                    ChannelServer ch_ = ChannelServer.getInstance(ch);
+                    if(ch_ != null){
+                        MapleCharacter chr = ch_.getPlayerStorage().getCharacterByName(player.getName());
+                        if (chr != null) {
+                            if (chr.getClient() != null) {
+                                chr.getClient().unLockDisconnect();
+                            }
+                        }
+                    }
                 }
                 try {
                     if (party != null) {
