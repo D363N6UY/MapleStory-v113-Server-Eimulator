@@ -1860,7 +1860,7 @@ public final class MapleMap {
                 summon.setFh(0); //lol, it can be fixed by movement
             }
             chr.addVisibleMapObject(summon);
-//          this.spawnSummon(summon);
+            this.spawnSummon(summon);
         }
         if (mapEffect != null) {
             mapEffect.sendStartData(chr.getClient());
