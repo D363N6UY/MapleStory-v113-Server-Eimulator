@@ -946,7 +946,7 @@ public class MapleStatEffect implements Serializable {
 
     public final boolean applyReturnScroll(final MapleCharacter applyto) {
         if (moveTo != -1) {
-            if (applyto.getMap().getReturnMapId() != applyto.getMapId()) {
+            //if (applyto.getMap().getReturnMapId() != applyto.getMapId()) {
                 MapleMap target;
                 if (moveTo == 999999999) {
                     target = applyto.getMap().getReturnMap();
@@ -962,7 +962,7 @@ public class MapleStatEffect implements Serializable {
                 }
                 applyto.changeMap(target, target.getPortal(0));
                 return true;
-            }
+            //}
         }
         return false;
     }
