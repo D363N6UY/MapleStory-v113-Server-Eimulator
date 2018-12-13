@@ -2,6 +2,15 @@
 
 ##MIT License
 
+#Compile
+
+```gradle buildAndCopy```
+
+#Start
+
+```Launcher.bat```
+
+
 可打賞
 
 ETH 0x883d088c3a57b9e5a0e8db2c7665aaf38edb56f6
