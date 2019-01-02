@@ -19,9 +19,6 @@ Launcher.bat
 
 ETH 0x883d088c3a57b9e5a0e8db2c7665aaf38edb56f6
 
-
-BTC 1CrP72HFkXV1QVRMWgbqde2nDVmLkez6PM
-
 會不定時修正伺服器，至於NPC腳本有請大家補充，有任何BUG請善用issues
 
 更新為Netty架構
